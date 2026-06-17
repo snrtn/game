@@ -824,6 +824,7 @@
       }
 
       function endDodgeLevel(type) {
+        if(!running) return; // 이중 호출 방지
         running=false;
         let sc=0;
         if(type==="car") sc=carScore;
@@ -831,7 +832,7 @@
         else if(type==="rocket") sc=rocketScore;
         stageScores.push({name:lv().name,emoji:lv().emoji,score:sc,cut:lv().cut,pass:sc>=lv().cut});
         spawnParticles(W/2,H/2,"#ff6644",20);
-        setTimeout(()=>showLevelResult(sc>=lv().cut),600);
+        setTimeout(()=>showLevelResult(true),400);
       }
 
       /* ══ 탭 모드 아이템 ══ */
@@ -978,7 +979,7 @@
           document.getElementById("lvup-title").textContent=lv().name+(pass?" CLEAR!":" NEXT STAGE");
           document.getElementById("lvup-sub").textContent="→ LV"+(level+2)+" "+LEVELS[level+1].name;
           document.getElementById("lvup-overlay").classList.add("show");
-          setTimeout(()=>{document.getElementById("lvup-overlay").classList.remove("show");level++;resetLevel();},2000);
+          setTimeout(()=>{document.getElementById("lvup-overlay").classList.remove("show");level++;resetLevel();},1400);
         } else {showFinalResult();}
       }
       function showFinalResult() {
@@ -1076,7 +1077,7 @@
                 running=false;
                 const pass=score>=l.cut;
                 stageScores.push({name:l.name,emoji:l.emoji,score,cut:l.cut,pass});
-                setTimeout(()=>showLevelResult(pass),300);
+                setTimeout(()=>showLevelResult(true),300);
                 return;
               }
             }
