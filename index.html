@@ -108,12 +108,30 @@
       .lst {
         padding: 0 14px 80px;
       }
-      .col-wrap { display: flex; flex-direction: column; gap: 9px; }
-      .col-l, .col-r { display: flex; flex-direction: column; gap: 9px; }
+      .col-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .col-l,
+      .col-r {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
       @media (min-width: 720px) {
-        .lst { padding: 0 24px 80px; }
-        .col-wrap { flex-direction: row; align-items: flex-start; }
-        .col-l, .col-r { flex: 1; min-width: 0; }
+        .lst {
+          padding: 0 24px 80px;
+        }
+        .col-wrap {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+        .col-l,
+        .col-r {
+          flex: 1;
+          min-width: 0;
+        }
       }
       .clbl {
         font-size: 10px;
@@ -278,258 +296,725 @@
     <script>
       const D = [
         // ── SOUDURE ──
-        {c:"solder",e:"Short Circuit",k:"Court-circuit",
-        d:"Un court-circuit, c'est quand deux points à l'intérieur du téléphone qui ne devraient pas être reliés le sont. Ça fait passer un courant excessif, ce qui provoque une surchauffe soudaine ou une extinction immédiate.",
-        sy:["Le téléphone chauffe à un endroit précis, même sans l'utiliser","Il s'éteint dès qu'on branche la batterie ou le chargeur","Il ne s'allume plus du tout"]},
+        {
+          c: "solder",
+          e: "Short Circuit",
+          k: "Court-circuit",
+          d: "Un court-circuit, c'est quand deux points à l'intérieur du téléphone qui ne devraient pas être reliés le sont. Ça fait passer un courant excessif, ce qui provoque une surchauffe soudaine ou une extinction immédiate.",
+          sy: [
+            "Le téléphone chauffe à un endroit précis, même sans l'utiliser",
+            "Il s'éteint dès qu'on branche la batterie ou le chargeur",
+            "Il ne s'allume plus du tout",
+          ],
+        },
 
-        {c:"solder",e:"Cold Solder Joint",k:"Soudure froide",
-        d:"Une soudure froide, c'est une connexion sur la carte mère où l'étain n'a pas bien adhéré. Le contact est instable — la panne peut apparaître et disparaître selon la température ou les vibrations.",
-        sy:["Une fonction revient quand le téléphone chauffe légèrement puis disparaît à nouveau","Le Wi-Fi, le son ou le tactile marche de façon intermittente sans raison apparente"]},
+        {
+          c: "solder",
+          e: "Cold Solder Joint",
+          k: "Soudure froide",
+          d: "Une soudure froide, c'est une connexion sur la carte mère où l'étain n'a pas bien adhéré. Le contact est instable — la panne peut apparaître et disparaître selon la température ou les vibrations.",
+          sy: [
+            "Une fonction revient quand le téléphone chauffe légèrement puis disparaît à nouveau",
+            "Le Wi-Fi, le son ou le tactile marche de façon intermittente sans raison apparente",
+          ],
+        },
 
-        {c:"solder",e:"Missing Ball",k:"Bille de soudure manquante",
-        d:"À l'intérieur du téléphone, certaines puces sont fixées à la carte par de minuscules points de soudure en forme de billes. Quand une bille se détache — souvent après une chute — la connexion qu'elle assurait est coupée, et la fonction qui en dépend s'arrête.",
-        sy:["Une seule fonction précise ne marche plus (ex. : la caméra mais pas le Wi-Fi)","Apparu juste après une chute"]},
+        {
+          c: "solder",
+          e: "Missing Ball",
+          k: "Bille de soudure manquante",
+          d: "À l'intérieur du téléphone, certaines puces sont fixées à la carte par de minuscules points de soudure en forme de billes. Quand une bille se détache — souvent après une chute — la connexion qu'elle assurait est coupée, et la fonction qui en dépend s'arrête.",
+          sy: [
+            "Une seule fonction précise ne marche plus (ex. : la caméra mais pas le Wi-Fi)",
+            "Apparu juste après une chute",
+          ],
+        },
 
+        {
+          c: "solder",
+          e: "Reballing",
+          k: "Rebillage",
+          d: "Le rebillage, c'est le remplacement des billes de soudure sous une puce. Ces minuscules billes assurent les connexions entre la puce et la carte mère. Elles peuvent se détacher suite à une chute ou une immersion.",
+          sy: [
+            "Une seule fonction précise ne répond plus après une chute ou une immersion",
+          ],
+        },
 
-        {c:"solder",e:"Reballing",k:"Rebillage",
-        d:"Le rebillage, c'est le remplacement des billes de soudure sous une puce. Ces minuscules billes assurent les connexions entre la puce et la carte mère. Elles peuvent se détacher suite à une chute ou une immersion.",
-        sy:["Une seule fonction précise ne répond plus après une chute ou une immersion"]},
+        {
+          c: "solder",
+          e: "Reflow",
+          k: "Refusion",
+          d: "La refusion, c'est le réchauffage des soudures existantes pour qu'elles se reforment correctement, sans remplacer la puce. Les connexions qui se sont fragilisées avec le temps peuvent ainsi être restaurées.",
+          sy: ["Panne intermittente qui va et vient sans raison apparente"],
+        },
 
-        {c:"solder",e:"Reflow",k:"Refusion",
-        d:"La refusion, c'est le réchauffage des soudures existantes pour qu'elles se reforment correctement, sans remplacer la puce. Les connexions qui se sont fragilisées avec le temps peuvent ainsi être restaurées.",
-        sy:["Panne intermittente qui va et vient sans raison apparente"]},
-
-        {c:"solder",e:"Underfill",k:"Résine de protection (Underfill)",
-        d:"Résine appliquée sous certaines puces pour les maintenir solidement sur la carte mère et protéger leurs connexions des chocs.",
-        sy:[]},
+        {
+          c: "solder",
+          e: "Underfill",
+          k: "Résine de protection (Underfill)",
+          d: "Résine appliquée sous certaines puces pour les maintenir solidement sur la carte mère et protéger leurs connexions des chocs.",
+          sy: [],
+        },
 
         // ── DOMMAGES ──
-        {c:"damage",e:"Water Damage",k:"Dégâts des eaux",
-        d:"Dommage causé par un contact avec l'eau ou un autre liquide. L'humidité peut provoquer des courts-circuits immédiats. Même si le téléphone semble fonctionner juste après, la corrosion progresse à l'intérieur et des pannes apparaissent parfois des jours ou semaines plus tard.",
-        sy:["Le téléphone s'est éteint au contact du liquide et ne redémarre pas","Plusieurs fonctions tombent en panne en même temps : micro, charge, haut-parleur","Des traces vertes ou blanches visibles à l'intérieur (corrosion)","Pannes progressives après une exposition à l'humidité"]},
+        {
+          c: "damage",
+          e: "Water Damage",
+          k: "Dégâts des eaux",
+          d: "Dommage causé par un contact avec l'eau ou un autre liquide. L'humidité peut provoquer des courts-circuits immédiats. Même si le téléphone semble fonctionner juste après, la corrosion progresse à l'intérieur et des pannes apparaissent parfois des jours ou semaines plus tard.",
+          sy: [
+            "Le téléphone s'est éteint au contact du liquide et ne redémarre pas",
+            "Plusieurs fonctions tombent en panne en même temps : micro, charge, haut-parleur",
+            "Des traces vertes ou blanches visibles à l'intérieur (corrosion)",
+            "Pannes progressives après une exposition à l'humidité",
+          ],
+        },
 
-        {c:"damage",e:"Impact Damage",k:"Dommage par chute",
-        d:"Dommage interne causé par une chute. L'écran peut rester intact, mais à l'intérieur des pièces peuvent s'être décrochées, des connexions fissurées ou des câbles détachés sans que ça soit visible de l'extérieur.",
-        sy:["Une fonction précise disparaît juste après une chute","L'écran fonctionne mais une autre fonction (caméra, son, réseau) ne répond plus","Pannes apparues quelques heures après la chute"]},
+        {
+          c: "damage",
+          e: "Impact Damage",
+          k: "Dommage par chute",
+          d: "Dommage interne causé par une chute. L'écran peut rester intact, mais à l'intérieur des pièces peuvent s'être décrochées, des connexions fissurées ou des câbles détachés sans que ça soit visible de l'extérieur.",
+          sy: [
+            "Une fonction précise disparaît juste après une chute",
+            "L'écran fonctionne mais une autre fonction (caméra, son, réseau) ne répond plus",
+            "Pannes apparues quelques heures après la chute",
+          ],
+        },
 
-        {c:"damage",e:"Oxidation",k:"Oxydation",
-        d:"Corrosion des parties métalliques à l'intérieur du téléphone due à l'humidité. On la reconnaît à des dépôts verts ou blancs sur les connecteurs. Elle perturbe les connexions et s'aggrave avec le temps si elle n'est pas traitée.",
-        sy:["Problèmes de charge intermittents sans raison apparente","Connecteur qui ne répond plus après une exposition à l'humidité","Contact de batterie capricieux"]},
+        {
+          c: "damage",
+          e: "Oxidation",
+          k: "Oxydation",
+          d: "Corrosion des parties métalliques à l'intérieur du téléphone due à l'humidité. On la reconnaît à des dépôts verts ou blancs sur les connecteurs. Elle perturbe les connexions et s'aggrave avec le temps si elle n'est pas traitée.",
+          sy: [
+            "Problèmes de charge intermittents sans raison apparente",
+            "Connecteur qui ne répond plus après une exposition à l'humidité",
+            "Contact de batterie capricieux",
+          ],
+        },
 
-        {c:"damage",e:"Overheating",k:"Surchauffe",
-        d:"Une partie du téléphone chauffe de manière anormale. Cela peut indiquer un court-circuit, une batterie défaillante ou une puce endommagée. Si la surchauffe persiste, elle risque d'abîmer d'autres parties du téléphone.",
-        sy:["Le téléphone est anormalement chaud en main, même sans l'utiliser","Il chauffe beaucoup plus vite que d'habitude pendant la charge","La batterie se vide très rapidement","Il s'éteint de lui-même à cause de la chaleur"]},
+        {
+          c: "damage",
+          e: "Overheating",
+          k: "Surchauffe",
+          d: "Une partie du téléphone chauffe de manière anormale. Cela peut indiquer un court-circuit, une batterie défaillante ou une puce endommagée. Si la surchauffe persiste, elle risque d'abîmer d'autres parties du téléphone.",
+          sy: [
+            "Le téléphone est anormalement chaud en main, même sans l'utiliser",
+            "Il chauffe beaucoup plus vite que d'habitude pendant la charge",
+            "La batterie se vide très rapidement",
+            "Il s'éteint de lui-même à cause de la chaleur",
+          ],
+        },
 
-        {c:"damage",e:"Battery Swelling",k:"Gonflement de batterie",
-        d:"La batterie gonfle physiquement suite à une accumulation de gaz à l'intérieur. C'est une situation dangereuse car une batterie gonflée peut se percer ou prendre feu. Elle ne doit jamais être percée ni pliée.",
-        sy:["Le dos du téléphone est bombé ou se soulève","L'écran se décolle ou est poussé vers l'extérieur","La batterie se décharge beaucoup plus vite qu'avant","Le téléphone n'est plus plat — il bascule sur une surface"]},
+        {
+          c: "damage",
+          e: "Battery Swelling",
+          k: "Gonflement de batterie",
+          d: "La batterie gonfle physiquement suite à une accumulation de gaz à l'intérieur. C'est une situation dangereuse car une batterie gonflée peut se percer ou prendre feu. Elle ne doit jamais être percée ni pliée.",
+          sy: [
+            "Le dos du téléphone est bombé ou se soulève",
+            "L'écran se décolle ou est poussé vers l'extérieur",
+            "La batterie se décharge beaucoup plus vite qu'avant",
+            "Le téléphone n'est plus plat — il bascule sur une surface",
+          ],
+        },
 
-        {c:"damage",e:"PCB Crack",k:"Fissure de carte mère",
-        d:"La carte mère s'est fissurée physiquement après une chute ou une torsion du téléphone. Cette fissure coupe des connexions internes invisibles à l'œil nu, ce qui met en panne uniquement les fonctions qui dépendent de ces connexions.",
-        sy:["Après une chute, une fonction précise cesse de marcher (ex. : la 4G mais pas le Wi-Fi)","Le problème apparaît et disparaît selon la façon dont on tient le téléphone","Panne progressive après une chute sur un angle"]},
+        {
+          c: "damage",
+          e: "PCB Crack",
+          k: "Fissure de carte mère",
+          d: "La carte mère s'est fissurée physiquement après une chute ou une torsion du téléphone. Cette fissure coupe des connexions internes invisibles à l'œil nu, ce qui met en panne uniquement les fonctions qui dépendent de ces connexions.",
+          sy: [
+            "Après une chute, une fonction précise cesse de marcher (ex. : la 4G mais pas le Wi-Fi)",
+            "Le problème apparaît et disparaît selon la façon dont on tient le téléphone",
+            "Panne progressive après une chute sur un angle",
+          ],
+        },
 
-        {c:"damage",e:"Ghost Touch",k:"Touches fantômes",
-        d:"L'écran réagit à des touches que personne ne fait. Cela peut venir de l'écran lui-même qui est endommagé, de la puce qui gère le tactile, ou d'une perturbation électrique provenant du chargeur.",
-        sy:["L'écran réagit seul : applications qui s'ouvrent, texte tapé automatiquement","Ça empire pendant la charge","Se produit toujours au même endroit sur l'écran"]},
+        {
+          c: "damage",
+          e: "Ghost Touch",
+          k: "Touches fantômes",
+          d: "L'écran réagit à des touches que personne ne fait. Cela peut venir de l'écran lui-même qui est endommagé, de la puce qui gère le tactile, ou d'une perturbation électrique provenant du chargeur.",
+          sy: [
+            "L'écran réagit seul : applications qui s'ouvrent, texte tapé automatiquement",
+            "Ça empire pendant la charge",
+            "Se produit toujours au même endroit sur l'écran",
+          ],
+        },
 
-        {c:"damage",e:"Green Line",k:"Ligne verte / rose sur l'écran",
-        d:"Une ligne colorée verticale apparaît sur les écrans OLED après un choc. Le verre peut sembler intact, mais l'intérieur du panneau est endommagé. Ces lignes ont tendance à s'élargir avec le temps.",
-        sy:["Après une chute, une ligne de couleur apparaît verticalement sur l'écran","La ligne s'élargit ou se multiplie progressivement","L'image est normale partout sauf sur cette bande"]},
+        {
+          c: "damage",
+          e: "Green Line",
+          k: "Ligne verte / rose sur l'écran",
+          d: "Une ligne colorée verticale apparaît sur les écrans OLED après un choc. Le verre peut sembler intact, mais l'intérieur du panneau est endommagé. Ces lignes ont tendance à s'élargir avec le temps.",
+          sy: [
+            "Après une chute, une ligne de couleur apparaît verticalement sur l'écran",
+            "La ligne s'élargit ou se multiplie progressivement",
+            "L'image est normale partout sauf sur cette bande",
+          ],
+        },
 
-        {c:"damage",e:"Backlight Failure",k:"Panne du rétroéclairage",
-        d:"Sur les écrans LCD, une lumière placée derrière le panneau permet d'afficher l'image. Quand cette lumière tombe en panne, l'écran semble éteint — mais l'image est toujours là, invisible à l'œil nu. En éclairant l'écran avec une lampe, on peut la voir très faiblement. Ce problème n'existe pas sur les écrans OLED.",
-        sy:["L'écran semble éteint mais le téléphone sonne et vibre normalement","En éclairant l'écran avec une lampe torche, on distingue l'image très faiblement","La luminosité ne peut plus être réglée"]},
+        {
+          c: "damage",
+          e: "Backlight Failure",
+          k: "Panne du rétroéclairage",
+          d: "Sur les écrans LCD, une lumière placée derrière le panneau permet d'afficher l'image. Quand cette lumière tombe en panne, l'écran semble éteint — mais l'image est toujours là, invisible à l'œil nu. En éclairant l'écran avec une lampe, on peut la voir très faiblement. Ce problème n'existe pas sur les écrans OLED.",
+          sy: [
+            "L'écran semble éteint mais le téléphone sonne et vibre normalement",
+            "En éclairant l'écran avec une lampe torche, on distingue l'image très faiblement",
+            "La luminosité ne peut plus être réglée",
+          ],
+        },
 
-        {c:"damage",e:"Burn-in",k:"Marquage d'écran (Burn-in)",
-        d:"Sur les écrans OLED, quand les mêmes éléments sont affichés au même endroit pendant des années — barre de statut, boutons — ces zones vieillissent plus vite et laissent une empreinte fantôme permanente. C'est une usure normale du panneau, non réparable.",
-        sy:["Sur fond uni clair, on voit en transparence l'ancienne interface","La trace est surtout à l'emplacement de la barre du haut ou des boutons","Apparaît progressivement sur les téléphones de plus de 2-3 ans"]},
+        {
+          c: "damage",
+          e: "Burn-in",
+          k: "Marquage d'écran (Burn-in)",
+          d: "Sur les écrans OLED, quand les mêmes éléments sont affichés au même endroit pendant des années — barre de statut, boutons — ces zones vieillissent plus vite et laissent une empreinte fantôme permanente. C'est une usure normale du panneau, non réparable.",
+          sy: [
+            "Sur fond uni clair, on voit en transparence l'ancienne interface",
+            "La trace est surtout à l'emplacement de la barre du haut ou des boutons",
+            "Apparaît progressivement sur les téléphones de plus de 2-3 ans",
+          ],
+        },
 
-        {c:"damage",e:"Touch ID Failure",k:"Panne du Touch ID",
-        d:"Le lecteur d'empreintes est associé de façon unique à la carte mère dès la fabrication en usine. Si le bouton Home est remplacé par une pièce non originale, Touch ID est définitivement désactivé — c'est une mesure de sécurité Apple.",
-        sy:["Impossible d'enregistrer une empreinte après un remplacement du bouton Home","Message 'Touch ID non disponible'","Erreur 53 lors d'une restauration iTunes"]},
+        {
+          c: "damage",
+          e: "Touch ID Failure",
+          k: "Panne du Touch ID",
+          d: "Le lecteur d'empreintes est associé de façon unique à la carte mère dès la fabrication en usine. Si le bouton Home est remplacé par une pièce non originale, Touch ID est définitivement désactivé — c'est une mesure de sécurité Apple.",
+          sy: [
+            "Impossible d'enregistrer une empreinte après un remplacement du bouton Home",
+            "Message 'Touch ID non disponible'",
+            "Erreur 53 lors d'une restauration iTunes",
+          ],
+        },
 
-        {c:"damage",e:"Microphone Failure",k:"Panne du microphone",
-        d:"Le téléphone possède plusieurs microphones selon les usages (appels, vidéo, assistant vocal). Quand l'un tombe en panne, seule la fonction liée à ce microphone est affectée, les autres continuent de fonctionner.",
-        sy:["Votre interlocuteur ne vous entend pas pendant les appels","Siri ou l'assistant vocal ne reconnaît plus la voix","Les vidéos enregistrées n'ont pas de son","Apparu après une immersion"]},
+        {
+          c: "damage",
+          e: "Microphone Failure",
+          k: "Panne du microphone",
+          d: "Le téléphone possède plusieurs microphones selon les usages (appels, vidéo, assistant vocal). Quand l'un tombe en panne, seule la fonction liée à ce microphone est affectée, les autres continuent de fonctionner.",
+          sy: [
+            "Votre interlocuteur ne vous entend pas pendant les appels",
+            "Siri ou l'assistant vocal ne reconnaît plus la voix",
+            "Les vidéos enregistrées n'ont pas de son",
+            "Apparu après une immersion",
+          ],
+        },
 
-        {c:"damage",e:"Speaker Failure",k:"Panne du haut-parleur",
-        d:"Le téléphone a deux haut-parleurs distincts : l'écouteur d'oreille pour les appels, et le haut-parleur externe pour la musique et les vidéos. Une panne peut toucher l'un sans affecter l'autre.",
-        sy:["Aucun son lors des appels (l'interlocuteur ne s'entend plus)","Pas de son pour la musique ou les vidéos","Son grésillant ou crachotant, surtout à volume élevé","Apparu après une chute ou une immersion"]},
+        {
+          c: "damage",
+          e: "Speaker Failure",
+          k: "Panne du haut-parleur",
+          d: "Le téléphone a deux haut-parleurs distincts : l'écouteur d'oreille pour les appels, et le haut-parleur externe pour la musique et les vidéos. Une panne peut toucher l'un sans affecter l'autre.",
+          sy: [
+            "Aucun son lors des appels (l'interlocuteur ne s'entend plus)",
+            "Pas de son pour la musique ou les vidéos",
+            "Son grésillant ou crachotant, surtout à volume élevé",
+            "Apparu après une chute ou une immersion",
+          ],
+        },
 
-        {c:"damage",e:"Camera Fog",k:"Buée dans l'objectif",
-        d:"De l'humidité s'est infiltrée à l'intérieur de l'objectif de la caméra. Les photos apparaissent voilées ou floues, et la buée revient à chaque changement de température.",
-        sy:["Les photos sont floues ou voilées","La buée disparaît puis revient selon la température","Visible à l'œil nu sur le verre de l'objectif"]},
+        {
+          c: "damage",
+          e: "Camera Fog",
+          k: "Buée dans l'objectif",
+          d: "De l'humidité s'est infiltrée à l'intérieur de l'objectif de la caméra. Les photos apparaissent voilées ou floues, et la buée revient à chaque changement de température.",
+          sy: [
+            "Les photos sont floues ou voilées",
+            "La buée disparaît puis revient selon la température",
+            "Visible à l'œil nu sur le verre de l'objectif",
+          ],
+        },
 
-        {c:"damage",e:"No Service",k:"Absence de réseau",
-        d:"Le téléphone ne parvient pas à se connecter au réseau mobile. Cela peut venir d'un problème logiciel, ou d'une puce interne qui gère les communications et qui est endommagée.",
-        sy:["Barres de signal absentes ou 'Pas de service' affiché en permanence","Impossible de passer ou recevoir des appels et des SMS","L'IMEI affiché est 000000"]},
+        {
+          c: "damage",
+          e: "No Service",
+          k: "Absence de réseau",
+          d: "Le téléphone ne parvient pas à se connecter au réseau mobile. Cela peut venir d'un problème logiciel, ou d'une puce interne qui gère les communications et qui est endommagée.",
+          sy: [
+            "Barres de signal absentes ou 'Pas de service' affiché en permanence",
+            "Impossible de passer ou recevoir des appels et des SMS",
+            "L'IMEI affiché est 000000",
+          ],
+        },
 
-        {c:"damage",e:"Boot Loop",k:"Boucle de démarrage",
-        d:"Le téléphone s'allume, affiche le logo, s'éteint, et recommence indéfiniment sans jamais terminer de démarrer. Peut venir d'un problème logiciel ou d'une panne matérielle interne.",
-        sy:["Le logo de la marque s'affiche puis le téléphone redémarre en boucle","Impossible d'atteindre l'écran d'accueil","Se bloque toujours au même stade du démarrage"]},
+        {
+          c: "damage",
+          e: "Boot Loop",
+          k: "Boucle de démarrage",
+          d: "Le téléphone s'allume, affiche le logo, s'éteint, et recommence indéfiniment sans jamais terminer de démarrer. Peut venir d'un problème logiciel ou d'une panne matérielle interne.",
+          sy: [
+            "Le logo de la marque s'affiche puis le téléphone redémarre en boucle",
+            "Impossible d'atteindre l'écran d'accueil",
+            "Se bloque toujours au même stade du démarrage",
+          ],
+        },
 
-        {c:"damage",e:"Black Screen",k:"Écran noir",
-        d:"L'écran reste éteint bien que le téléphone fonctionne encore. Cela peut venir de l'écran lui-même, d'une connexion interne décrochée, ou d'un problème sur la carte mère.",
-        sy:["L'écran reste noir même après avoir appuyé sur le bouton d'alimentation","Le téléphone sonne ou vibre mais rien ne s'affiche"]},
+        {
+          c: "damage",
+          e: "Black Screen",
+          k: "Écran noir",
+          d: "L'écran reste éteint bien que le téléphone fonctionne encore. Cela peut venir de l'écran lui-même, d'une connexion interne décrochée, ou d'un problème sur la carte mère.",
+          sy: [
+            "L'écran reste noir même après avoir appuyé sur le bouton d'alimentation",
+            "Le téléphone sonne ou vibre mais rien ne s'affiche",
+          ],
+        },
 
-        {c:"damage",e:"White Screen",k:"Écran blanc",
-        d:"L'écran s'allume mais affiche uniquement du blanc, sans aucune image. Cela peut venir du panneau d'écran lui-même, d'une connexion mal emboîtée, ou de la puce qui pilote l'affichage.",
-        sy:["L'écran affiche du blanc uni en permanence","Parfois intermittent : blanc, normal quelques secondes, blanc à nouveau"]},
+        {
+          c: "damage",
+          e: "White Screen",
+          k: "Écran blanc",
+          d: "L'écran s'allume mais affiche uniquement du blanc, sans aucune image. Cela peut venir du panneau d'écran lui-même, d'une connexion mal emboîtée, ou de la puce qui pilote l'affichage.",
+          sy: [
+            "L'écran affiche du blanc uni en permanence",
+            "Parfois intermittent : blanc, normal quelques secondes, blanc à nouveau",
+          ],
+        },
 
-        {c:"damage",e:"Half Screen",k:"Demi-écran",
-        d:"La moitié de l'écran s'affiche normalement, l'autre est noire ou d'une couleur uniforme. Cela indique un problème sur la puce qui gère l'affichage, ou une connexion interne du panneau endommagée.",
-        sy:["La moitié de l'écran est noire ou d'une seule couleur","Le tactile ne fonctionne que sur la moitié valide","Apparu juste après une chute"]},
+        {
+          c: "damage",
+          e: "Half Screen",
+          k: "Demi-écran",
+          d: "La moitié de l'écran s'affiche normalement, l'autre est noire ou d'une couleur uniforme. Cela indique un problème sur la puce qui gère l'affichage, ou une connexion interne du panneau endommagée.",
+          sy: [
+            "La moitié de l'écran est noire ou d'une seule couleur",
+            "Le tactile ne fonctionne que sur la moitié valide",
+            "Apparu juste après une chute",
+          ],
+        },
 
         // ── COMPOSANTS ──
-        {c:"parts",e:"SoC",k:"Puce principale (Processeur)",
-        d:"C'est le cerveau du téléphone — la puce qui fait tout fonctionner : les applications, l'écran, les appels, la caméra. Chez Apple, c'est la puce A-series (A16, A17 Pro…). Si elle est endommagée, le téléphone ne fonctionne plus du tout.",
-        sy:["Le téléphone ne réagit plus du tout, même en chargeant","Impossible de faire quoi que ce soit, même en branchant sur un ordinateur"]},
+        {
+          c: "parts",
+          e: "SoC",
+          k: "Puce principale (Processeur)",
+          d: "C'est le cerveau du téléphone — la puce qui fait tout fonctionner : les applications, l'écran, les appels, la caméra. Chez Apple, c'est la puce A-series (A16, A17 Pro…). Si elle est endommagée, le téléphone ne fonctionne plus du tout.",
+          sy: [
+            "Le téléphone ne réagit plus du tout, même en chargeant",
+            "Impossible de faire quoi que ce soit, même en branchant sur un ordinateur",
+          ],
+        },
 
-        {c:"parts",e:"NAND Flash",k:"Mémoire de stockage",
-        d:"C'est le disque dur du téléphone — l'endroit où sont enregistrés le système, les applications et les photos. Sur iPhone, cette mémoire est liée de façon sécurisée à la puce principale dès la fabrication, ce qui complique tout remplacement.",
-        sy:["L'espace de stockage s'affiche à zéro","Les restaurations via iTunes échouent (erreurs 4013 ou 4014)","Le téléphone redémarre en boucle infinie","Il ne reconnaît plus ses propres applications"]},
+        {
+          c: "parts",
+          e: "NAND Flash",
+          k: "Mémoire de stockage",
+          d: "C'est le disque dur du téléphone — l'endroit où sont enregistrés le système, les applications et les photos. Sur iPhone, cette mémoire est liée de façon sécurisée à la puce principale dès la fabrication, ce qui complique tout remplacement.",
+          sy: [
+            "L'espace de stockage s'affiche à zéro",
+            "Les restaurations via iTunes échouent (erreurs 4013 ou 4014)",
+            "Le téléphone redémarre en boucle infinie",
+            "Il ne reconnaît plus ses propres applications",
+          ],
+        },
 
-        {c:"parts",e:"PMIC",k:"Gestionnaire d'alimentation",
-        d:"La puce qui reçoit l'énergie de la batterie et la distribue correctement à chaque partie du téléphone. Si elle tombe en panne, certaines fonctions ne reçoivent plus d'alimentation et s'arrêtent.",
-        sy:["Le téléphone s'éteint immédiatement quand on branche la batterie","Certaines fonctions tombent en panne sans raison apparente","Le téléphone refuse de charger"]},
+        {
+          c: "parts",
+          e: "PMIC",
+          k: "Gestionnaire d'alimentation",
+          d: "La puce qui reçoit l'énergie de la batterie et la distribue correctement à chaque partie du téléphone. Si elle tombe en panne, certaines fonctions ne reçoivent plus d'alimentation et s'arrêtent.",
+          sy: [
+            "Le téléphone s'éteint immédiatement quand on branche la batterie",
+            "Certaines fonctions tombent en panne sans raison apparente",
+            "Le téléphone refuse de charger",
+          ],
+        },
 
-        {c:"parts",e:"Baseband",k:"Puce de communication mobile",
-        d:"La puce qui gère tout ce qui est communication mobile : appels, SMS, 4G et 5G. Elle stocke aussi le numéro IMEI du téléphone. Si elle est endommagée, le téléphone perd tout réseau mobile.",
-        sy:["Plus aucun réseau mobile — ni appels, ni SMS, ni données","'Pas de service' affiché en permanence","L'IMEI affiché est 000000"]},
+        {
+          c: "parts",
+          e: "Baseband",
+          k: "Puce de communication mobile",
+          d: "La puce qui gère tout ce qui est communication mobile : appels, SMS, 4G et 5G. Elle stocke aussi le numéro IMEI du téléphone. Si elle est endommagée, le téléphone perd tout réseau mobile.",
+          sy: [
+            "Plus aucun réseau mobile — ni appels, ni SMS, ni données",
+            "'Pas de service' affiché en permanence",
+            "L'IMEI affiché est 000000",
+          ],
+        },
 
-        {c:"parts",e:"Charging IC",k:"Puce de charge",
-        d:"La puce qui contrôle la charge de la batterie depuis le port USB. C'est elle qui régule l'entrée d'énergie pour protéger la batterie. Si elle est défaillante, le téléphone ne charge plus ou ne reconnaît plus le chargeur.",
-        sy:["Le téléphone ne charge plus du tout","Le chargeur est branché mais le pourcentage ne monte pas","Le téléphone reconnaît parfois le chargeur, parfois non"]},
+        {
+          c: "parts",
+          e: "Charging IC",
+          k: "Puce de charge",
+          d: "La puce qui contrôle la charge de la batterie depuis le port USB. C'est elle qui régule l'entrée d'énergie pour protéger la batterie. Si elle est défaillante, le téléphone ne charge plus ou ne reconnaît plus le chargeur.",
+          sy: [
+            "Le téléphone ne charge plus du tout",
+            "Le chargeur est branché mais le pourcentage ne monte pas",
+            "Le téléphone reconnaît parfois le chargeur, parfois non",
+          ],
+        },
 
-        {c:"parts",e:"Display IC",k:"Puce d'affichage",
-        d:"La puce qui reçoit l'image du processeur et la transmet au panneau d'écran. Si elle est défaillante, l'image ne s'affiche plus, partiellement ou complètement.",
-        sy:["L'écran reste noir alors que le téléphone fonctionne (sons, vibrations)","Seulement la moitié de l'écran s'affiche","Couleurs anormales ou lignes sur l'écran"]},
+        {
+          c: "parts",
+          e: "Display IC",
+          k: "Puce d'affichage",
+          d: "La puce qui reçoit l'image du processeur et la transmet au panneau d'écran. Si elle est défaillante, l'image ne s'affiche plus, partiellement ou complètement.",
+          sy: [
+            "L'écran reste noir alors que le téléphone fonctionne (sons, vibrations)",
+            "Seulement la moitié de l'écran s'affiche",
+            "Couleurs anormales ou lignes sur l'écran",
+          ],
+        },
 
-        {c:"parts",e:"Touch IC",k:"Puce tactile",
-        d:"La puce qui lit les touches sur le verre de l'écran et les envoie au processeur. Si elle est défaillante, l'écran ne réagit plus aux doigts, ou au contraire réagit tout seul.",
-        sy:["L'écran ne réagit plus aux touchers","Des appuis se produisent tout seuls (touches fantômes)","Seule une zone de l'écran répond"]},
+        {
+          c: "parts",
+          e: "Touch IC",
+          k: "Puce tactile",
+          d: "La puce qui lit les touches sur le verre de l'écran et les envoie au processeur. Si elle est défaillante, l'écran ne réagit plus aux doigts, ou au contraire réagit tout seul.",
+          sy: [
+            "L'écran ne réagit plus aux touchers",
+            "Des appuis se produisent tout seuls (touches fantômes)",
+            "Seule une zone de l'écran répond",
+          ],
+        },
 
-        {c:"parts",e:"Audio Codec",k:"Puce audio",
-        d:"La puce qui gère tous les sons du téléphone : haut-parleur, microphone, écouteur d'oreille et prise casque. Une panne peut affecter plusieurs de ces fonctions audio simultanément.",
-        sy:["Le haut-parleur et le microphone tombent en panne en même temps","Pas de son dans l'écouteur lors des appels","Siri ne reconnaît plus la voix"]},
+        {
+          c: "parts",
+          e: "Audio Codec",
+          k: "Puce audio",
+          d: "La puce qui gère tous les sons du téléphone : haut-parleur, microphone, écouteur d'oreille et prise casque. Une panne peut affecter plusieurs de ces fonctions audio simultanément.",
+          sy: [
+            "Le haut-parleur et le microphone tombent en panne en même temps",
+            "Pas de son dans l'écouteur lors des appels",
+            "Siri ne reconnaît plus la voix",
+          ],
+        },
 
-        {c:"parts",e:"Backlight IC",k:"Puce de rétroéclairage",
-        d:"La puce qui alimente la lumière derrière les écrans LCD. Sans elle, l'image existe mais reste invisible à l'œil nu — on peut la voir uniquement en éclairant l'écran avec une lampe.",
-        sy:["L'écran semble éteint mais en l'éclairant avec une lampe torche on voit l'image faiblement","La luminosité ne peut plus être ajustée"]},
+        {
+          c: "parts",
+          e: "Backlight IC",
+          k: "Puce de rétroéclairage",
+          d: "La puce qui alimente la lumière derrière les écrans LCD. Sans elle, l'image existe mais reste invisible à l'œil nu — on peut la voir uniquement en éclairant l'écran avec une lampe.",
+          sy: [
+            "L'écran semble éteint mais en l'éclairant avec une lampe torche on voit l'image faiblement",
+            "La luminosité ne peut plus être ajustée",
+          ],
+        },
 
-        {c:"parts",e:"Face ID Module",k:"Module Face ID",
-        d:"Le module qui scanne le visage en 3D pour déverrouiller le téléphone. Il est associé de façon sécurisée à la carte mère dès la fabrication. Remplacer ce module par une pièce non originale désactive définitivement Face ID.",
-        sy:["Impossible de configurer le Face ID après une réparation","Message 'Face ID non disponible'","Apparu après une chute touchant la caméra frontale"]},
+        {
+          c: "parts",
+          e: "Face ID Module",
+          k: "Module Face ID",
+          d: "Le module qui scanne le visage en 3D pour déverrouiller le téléphone. Il est associé de façon sécurisée à la carte mère dès la fabrication. Remplacer ce module par une pièce non originale désactive définitivement Face ID.",
+          sy: [
+            "Impossible de configurer le Face ID après une réparation",
+            "Message 'Face ID non disponible'",
+            "Apparu après une chute touchant la caméra frontale",
+          ],
+        },
 
-        {c:"parts",e:"PA (Power Amplifier)",k:"Amplificateur de signal radio",
-        d:"La puce qui amplifie le signal avant qu'il parte vers l'antenne. Si elle est défaillante, le signal devient très faible — les appels se coupent et la 4G/5G ralentit, même quand les barres de signal sont affichées.",
-        sy:["Les barres de signal sont là mais les appels se coupent souvent","La 4G/5G est lente même avec un bon signal","Apparu après une chute"]},
+        {
+          c: "parts",
+          e: "PA (Power Amplifier)",
+          k: "Amplificateur de signal radio",
+          d: "La puce qui amplifie le signal avant qu'il parte vers l'antenne. Si elle est défaillante, le signal devient très faible — les appels se coupent et la 4G/5G ralentit, même quand les barres de signal sont affichées.",
+          sy: [
+            "Les barres de signal sont là mais les appels se coupent souvent",
+            "La 4G/5G est lente même avec un bon signal",
+            "Apparu après une chute",
+          ],
+        },
 
-        {c:"parts",e:"NFC IC",k:"Puce NFC (paiement sans contact)",
-        d:"La puce qui gère le paiement sans contact (Apple Pay), les badges de transport et la lecture de tags NFC à courte distance.",
-        sy:["Impossible de payer sans contact","Les badges et tags NFC ne sont pas reconnus","Apparu après une immersion ou une chute"]},
+        {
+          c: "parts",
+          e: "NFC IC",
+          k: "Puce NFC (paiement sans contact)",
+          d: "La puce qui gère le paiement sans contact (Apple Pay), les badges de transport et la lecture de tags NFC à courte distance.",
+          sy: [
+            "Impossible de payer sans contact",
+            "Les badges et tags NFC ne sont pas reconnus",
+            "Apparu après une immersion ou une chute",
+          ],
+        },
 
-        {c:"parts",e:"WiFi+BT Module",k:"Module Wi-Fi et Bluetooth",
-        d:"Le module qui gère le Wi-Fi et le Bluetooth. Les deux fonctions partagent la même puce, donc une panne les affecte généralement toutes les deux en même temps.",
-        sy:["Le téléphone ne détecte plus aucun réseau Wi-Fi","Impossible de se connecter à un casque ou une enceinte Bluetooth","Wi-Fi et Bluetooth tombent en panne en même temps"]},
+        {
+          c: "parts",
+          e: "WiFi+BT Module",
+          k: "Module Wi-Fi et Bluetooth",
+          d: "Le module qui gère le Wi-Fi et le Bluetooth. Les deux fonctions partagent la même puce, donc une panne les affecte généralement toutes les deux en même temps.",
+          sy: [
+            "Le téléphone ne détecte plus aucun réseau Wi-Fi",
+            "Impossible de se connecter à un casque ou une enceinte Bluetooth",
+            "Wi-Fi et Bluetooth tombent en panne en même temps",
+          ],
+        },
 
-        {c:"parts",e:"USB Controller",k:"Puce de communication USB",
-        d:"La puce qui gère les échanges de données via le câble USB. Si elle est défaillante, l'ordinateur ne reconnaît plus le téléphone, même si la charge fonctionne encore.",
-        sy:["L'ordinateur ne reconnaît plus le téléphone quand on le branche","Impossible de transférer des photos ou de faire une sauvegarde","iTunes ou Finder ne voit pas l'appareil"]},
+        {
+          c: "parts",
+          e: "USB Controller",
+          k: "Puce de communication USB",
+          d: "La puce qui gère les échanges de données via le câble USB. Si elle est défaillante, l'ordinateur ne reconnaît plus le téléphone, même si la charge fonctionne encore.",
+          sy: [
+            "L'ordinateur ne reconnaît plus le téléphone quand on le branche",
+            "Impossible de transférer des photos ou de faire une sauvegarde",
+            "iTunes ou Finder ne voit pas l'appareil",
+          ],
+        },
 
-        {c:"parts",e:"Gyroscope",k:"Capteur d'orientation",
-        d:"Le capteur qui détecte comment le téléphone est orienté et comment il bouge. La rotation automatique de l'écran, la boussole et les jeux qui répondent à l'inclinaison en dépendent.",
-        sy:["L'écran ne se retourne plus automatiquement","La boussole indique une mauvaise direction","Les jeux par inclinaison ne réagissent plus correctement"]},
+        {
+          c: "parts",
+          e: "Gyroscope",
+          k: "Capteur d'orientation",
+          d: "Le capteur qui détecte comment le téléphone est orienté et comment il bouge. La rotation automatique de l'écran, la boussole et les jeux qui répondent à l'inclinaison en dépendent.",
+          sy: [
+            "L'écran ne se retourne plus automatiquement",
+            "La boussole indique une mauvaise direction",
+            "Les jeux par inclinaison ne réagissent plus correctement",
+          ],
+        },
 
-        {c:"parts",e:"Inductor",k:"Inductance (petite bobine)",
-        d:"Un tout petit composant qui assure une alimentation stable à une partie précise du téléphone. Quand il se détache — souvent après une chute — la fonction qu'il alimente s'arrête net, même si le reste du téléphone fonctionne parfaitement.",
-        sy:["Une fonction précise s'arrête net après une chute","Le reste du téléphone fonctionne parfaitement"]},
+        {
+          c: "parts",
+          e: "Inductor",
+          k: "Inductance (petite bobine)",
+          d: "Un tout petit composant qui assure une alimentation stable à une partie précise du téléphone. Quand il se détache — souvent après une chute — la fonction qu'il alimente s'arrête net, même si le reste du téléphone fonctionne parfaitement.",
+          sy: [
+            "Une fonction précise s'arrête net après une chute",
+            "Le reste du téléphone fonctionne parfaitement",
+          ],
+        },
 
-        {c:"parts",e:"Capacitor",k:"Condensateur",
-        d:"Un composant qui stocke de l'énergie pour maintenir une alimentation stable. S'il tombe en panne, il peut provoquer un court-circuit et couper totalement l'alimentation d'une fonction entière.",
-        sy:["Une fonction tombe en panne sans raison apparente","Aucun choc ni immersion ne précède la panne"]},
+        {
+          c: "parts",
+          e: "Capacitor",
+          k: "Condensateur",
+          d: "Un composant qui stocke de l'énergie pour maintenir une alimentation stable. S'il tombe en panne, il peut provoquer un court-circuit et couper totalement l'alimentation d'une fonction entière.",
+          sy: [
+            "Une fonction tombe en panne sans raison apparente",
+            "Aucun choc ni immersion ne précède la panne",
+          ],
+        },
 
-        {c:"parts",e:"Crystal",k:"Quartz (oscillateur interne)",
-        d:"Un minuscule composant qui donne le rythme de fonctionnement à certaines puces — un peu comme une horloge. Sans lui, la puce qu'il cadence ne peut plus fonctionner du tout.",
-        sy:["Disparition soudaine de tout le réseau mobile sans autre cause visible","Le Wi-Fi cesse de fonctionner subitement"]},
+        {
+          c: "parts",
+          e: "Crystal",
+          k: "Quartz (oscillateur interne)",
+          d: "Un minuscule composant qui donne le rythme de fonctionnement à certaines puces — un peu comme une horloge. Sans lui, la puce qu'il cadence ne peut plus fonctionner du tout.",
+          sy: [
+            "Disparition soudaine de tout le réseau mobile sans autre cause visible",
+            "Le Wi-Fi cesse de fonctionner subitement",
+          ],
+        },
 
-        {c:"parts",e:"Flex Cable",k:"Nappe flexible (câble ruban)",
-        d:"Un câble plat et souple qui relie les composants périphériques (écran, caméra, boutons) à la carte mère. Si la nappe est pliée ou mal connectée, la fonction qu'elle relie devient capricieuse.",
-        sy:["Une fonction marche si on appuie à un endroit précis du téléphone, sinon non","Le problème revient de façon intermittente","Apparu après le remplacement de l'écran ou d'un autre composant"]},
+        {
+          c: "parts",
+          e: "Flex Cable",
+          k: "Nappe flexible (câble ruban)",
+          d: "Un câble plat et souple qui relie les composants périphériques (écran, caméra, boutons) à la carte mère. Si la nappe est pliée ou mal connectée, la fonction qu'elle relie devient capricieuse.",
+          sy: [
+            "Une fonction marche si on appuie à un endroit précis du téléphone, sinon non",
+            "Le problème revient de façon intermittente",
+            "Apparu après le remplacement de l'écran ou d'un autre composant",
+          ],
+        },
 
-        {c:"parts",e:"Taptic Engine",k:"Moteur vibrant (Taptic Engine)",
-        d:"Le moteur vibrant de précision d'Apple, capable de produire différents types de retours : la sensation de clic du bouton Home, les confirmations Apple Pay, les vibrations des notifications.",
-        sy:["Plus aucune vibration, même pour les appels","Le bouton Home ne donne plus aucune sensation de clic","Les confirmations haptiques (Apple Pay, etc.) ont disparu"]},
+        {
+          c: "parts",
+          e: "Taptic Engine",
+          k: "Moteur vibrant (Taptic Engine)",
+          d: "Le moteur vibrant de précision d'Apple, capable de produire différents types de retours : la sensation de clic du bouton Home, les confirmations Apple Pay, les vibrations des notifications.",
+          sy: [
+            "Plus aucune vibration, même pour les appels",
+            "Le bouton Home ne donne plus aucune sensation de clic",
+            "Les confirmations haptiques (Apple Pay, etc.) ont disparu",
+          ],
+        },
 
-        {c:"parts",e:"Midframe",k:"Châssis (armature interne)",
-        d:"La structure métallique interne qui maintient tous les éléments du téléphone en place : carte mère, batterie, écran. Une déformation après une chute peut exercer une pression sur l'écran ou tordre la carte mère.",
-        sy:["L'écran ne se referme plus bien","Le dos du téléphone ne colle plus correctement","Fissures qui réapparaissent malgré les réparations"]},
+        {
+          c: "parts",
+          e: "Midframe",
+          k: "Châssis (armature interne)",
+          d: "La structure métallique interne qui maintient tous les éléments du téléphone en place : carte mère, batterie, écran. Une déformation après une chute peut exercer une pression sur l'écran ou tordre la carte mère.",
+          sy: [
+            "L'écran ne se referme plus bien",
+            "Le dos du téléphone ne colle plus correctement",
+            "Fissures qui réapparaissent malgré les réparations",
+          ],
+        },
 
-        {c:"parts",e:"Logic Board",k:"Carte mère (Logic Board)",
-        d:"La carte principale sur laquelle sont montées toutes les puces et composants du téléphone. C'est la pièce centrale qui fait fonctionner l'ensemble du téléphone.",
-        sy:["Plusieurs fonctions en panne en même temps","Le téléphone ne répond à rien malgré une batterie chargée"]},
+        {
+          c: "parts",
+          e: "Logic Board",
+          k: "Carte mère (Logic Board)",
+          d: "La carte principale sur laquelle sont montées toutes les puces et composants du téléphone. C'est la pièce centrale qui fait fonctionner l'ensemble du téléphone.",
+          sy: [
+            "Plusieurs fonctions en panne en même temps",
+            "Le téléphone ne répond à rien malgré une batterie chargée",
+          ],
+        },
 
         // ── DIAGNOSTIC ──
-        {c:"diag",e:"DFU Mode",k:"Mode DFU",
-        d:"Un mode de démarrage très bas niveau de l'iPhone, où l'écran reste noir mais le téléphone est reconnu par un ordinateur. Il permet de réinstaller complètement iOS même quand le téléphone ne démarre plus normalement.",
-        sy:["L'écran est noir mais le téléphone est reconnu par un ordinateur"]},
+        {
+          c: "diag",
+          e: "DFU Mode",
+          k: "Mode DFU",
+          d: "Un mode de démarrage très bas niveau de l'iPhone, où l'écran reste noir mais le téléphone est reconnu par un ordinateur. Il permet de réinstaller complètement iOS même quand le téléphone ne démarre plus normalement.",
+          sy: [
+            "L'écran est noir mais le téléphone est reconnu par un ordinateur",
+          ],
+        },
 
-        {c:"diag",e:"Recovery Mode",k:"Mode de récupération",
-        d:"Un mode de démarrage où l'iPhone affiche une icône de câble sur l'écran et attend d'être restauré via un ordinateur. Utilisé quand le téléphone est bloqué et ne démarre plus normalement.",
-        sy:["L'écran affiche une icône de câble et ne va pas plus loin","Le téléphone est bloqué sur cet écran sans pouvoir démarrer normalement"]},
+        {
+          c: "diag",
+          e: "Recovery Mode",
+          k: "Mode de récupération",
+          d: "Un mode de démarrage où l'iPhone affiche une icône de câble sur l'écran et attend d'être restauré via un ordinateur. Utilisé quand le téléphone est bloqué et ne démarre plus normalement.",
+          sy: [
+            "L'écran affiche une icône de câble et ne va pas plus loin",
+            "Le téléphone est bloqué sur cet écran sans pouvoir démarrer normalement",
+          ],
+        },
 
-        {c:"diag",e:"Brick",k:"Téléphone mort (Brick)",
-        d:"Un téléphone complètement inopérant. La brique logicielle (système corrompu) est récupérable par une restauration. La brique matérielle (panne physique interne) nécessite une réparation.",
-        sy:["Le téléphone ne réagit à rien du tout","Même branché à un ordinateur, rien ne se passe","Ni sons, ni écran, ni vibration"]},
+        {
+          c: "diag",
+          e: "Brick",
+          k: "Téléphone mort (Brick)",
+          d: "Un téléphone complètement inopérant. La brique logicielle (système corrompu) est récupérable par une restauration. La brique matérielle (panne physique interne) nécessite une réparation.",
+          sy: [
+            "Le téléphone ne réagit à rien du tout",
+            "Même branché à un ordinateur, rien ne se passe",
+            "Ni sons, ni écran, ni vibration",
+          ],
+        },
 
-        {c:"diag",e:"iTunes Error Codes",k:"Codes d'erreur iTunes",
-        d:"Quand une restauration via iTunes échoue, un code numérique s'affiche. Chaque code indique une cause spécifique et oriente le diagnostic.",
-        sy:["Erreur 4013 / 4014 → mémoire de stockage endommagée","Erreur 53 → remplacement non autorisé du bouton Home","Erreur 14 → batterie ou alimentation","Erreur 9 → problème de connexion USB"]},
+        {
+          c: "diag",
+          e: "iTunes Error Codes",
+          k: "Codes d'erreur iTunes",
+          d: "Quand une restauration via iTunes échoue, un code numérique s'affiche. Chaque code indique une cause spécifique et oriente le diagnostic.",
+          sy: [
+            "Erreur 4013 / 4014 → mémoire de stockage endommagée",
+            "Erreur 53 → remplacement non autorisé du bouton Home",
+            "Erreur 14 → batterie ou alimentation",
+            "Erreur 9 → problème de connexion USB",
+          ],
+        },
 
         // ── VERROUILLAGE ──
-        {c:"lock",e:"iCloud Lock",k:"Verrouillage iCloud",
-        d:"Un verrou de sécurité Apple qui s'active quand un iPhone est réinitialisé alors que la fonction 'Localiser mon iPhone' était active. Sans l'identifiant Apple du propriétaire d'origine, l'appareil est inutilisable.",
-        sy:["Après une réinitialisation, le téléphone demande un identifiant Apple inconnu","Écran 'Verrou d'activation' impossible à dépasser"]},
+        {
+          c: "lock",
+          e: "iCloud Lock",
+          k: "Verrouillage iCloud",
+          d: "Un verrou de sécurité Apple qui s'active quand un iPhone est réinitialisé alors que la fonction 'Localiser mon iPhone' était active. Sans l'identifiant Apple du propriétaire d'origine, l'appareil est inutilisable.",
+          sy: [
+            "Après une réinitialisation, le téléphone demande un identifiant Apple inconnu",
+            "Écran 'Verrou d'activation' impossible à dépasser",
+          ],
+        },
 
-        {c:"lock",e:"FMI (Find My iPhone)",k:"Localiser mon iPhone",
-        d:"La fonction de localisation Apple. Tant qu'elle est activée, toute réinitialisation du téléphone déclenche le verrouillage iCloud automatiquement.",
-        sy:["Après achat d'occasion : le téléphone demande un identifiant Apple que vous ne connaissez pas","Le vendeur 'n'arrive plus à désactiver' FMI — signe fréquent d'arnaque"]},
+        {
+          c: "lock",
+          e: "FMI (Find My iPhone)",
+          k: "Localiser mon iPhone",
+          d: "La fonction de localisation Apple. Tant qu'elle est activée, toute réinitialisation du téléphone déclenche le verrouillage iCloud automatiquement.",
+          sy: [
+            "Après achat d'occasion : le téléphone demande un identifiant Apple que vous ne connaissez pas",
+            "Le vendeur 'n'arrive plus à désactiver' FMI — signe fréquent d'arnaque",
+          ],
+        },
 
-        {c:"lock",e:"MDM Lock",k:"Verrouillage de gestion d'entreprise",
-        d:"Un système de gestion à distance installé par les entreprises et les écoles sur leurs téléphones. Il permet à l'organisation de contrôler l'appareil : bloquer des applications, imposer des restrictions. Si le téléphone est réinitialisé, il se ré-enregistre automatiquement.",
-        sy:["Après achat d'un téléphone pro d'occasion : message '[Société] gère cet appareil'","Des applications ne peuvent pas être installées","Des réglages sont grisés et inaccessibles"]},
+        {
+          c: "lock",
+          e: "MDM Lock",
+          k: "Verrouillage de gestion d'entreprise",
+          d: "Un système de gestion à distance installé par les entreprises et les écoles sur leurs téléphones. Il permet à l'organisation de contrôler l'appareil : bloquer des applications, imposer des restrictions. Si le téléphone est réinitialisé, il se ré-enregistre automatiquement.",
+          sy: [
+            "Après achat d'un téléphone pro d'occasion : message '[Société] gère cet appareil'",
+            "Des applications ne peuvent pas être installées",
+            "Des réglages sont grisés et inaccessibles",
+          ],
+        },
 
-        {c:"lock",e:"Carrier Lock",k:"Verrouillage opérateur",
-        d:"Un téléphone verrouillé opérateur ne fonctionne qu'avec la carte SIM de l'opérateur chez qui il a été acheté. C'est courant sur les téléphones achetés avec un abonnement en boutique.",
-        sy:["Avec une SIM d'un autre opérateur : 'SIM non supportée'","Impossible d'utiliser une SIM locale à l'étranger"]},
+        {
+          c: "lock",
+          e: "Carrier Lock",
+          k: "Verrouillage opérateur",
+          d: "Un téléphone verrouillé opérateur ne fonctionne qu'avec la carte SIM de l'opérateur chez qui il a été acheté. C'est courant sur les téléphones achetés avec un abonnement en boutique.",
+          sy: [
+            "Avec une SIM d'un autre opérateur : 'SIM non supportée'",
+            "Impossible d'utiliser une SIM locale à l'étranger",
+          ],
+        },
 
-        {c:"lock",e:"SIM Unlock",k:"Déverrouillage SIM",
-        d:"Le déverrouillage SIM libère le téléphone de son verrouillage opérateur. Une fois déverrouillé, le téléphone accepte les cartes SIM de n'importe quel opérateur.",
-        sy:[]},
+        {
+          c: "lock",
+          e: "SIM Unlock",
+          k: "Déverrouillage SIM",
+          d: "Le déverrouillage SIM libère le téléphone de son verrouillage opérateur. Une fois déverrouillé, le téléphone accepte les cartes SIM de n'importe quel opérateur.",
+          sy: [],
+        },
 
-        {c:"lock",e:"IMEI",k:"IMEI — numéro d'identité du téléphone",
-        d:"Le numéro d'identification unique de chaque téléphone, comme une plaque d'immatriculation. Il est permanent et ne change jamais. Si un téléphone est signalé volé, son IMEI est bloqué et il ne peut plus se connecter à aucun réseau. On le consulte en tapant *#06#.",
-        sy:["IMEI sur liste noire : le téléphone ne capte aucun réseau même avec une SIM valide","IMEI affiché 000000 : la puce de communication est endommagée"]},
+        {
+          c: "lock",
+          e: "IMEI",
+          k: "IMEI — numéro d'identité du téléphone",
+          d: "Le numéro d'identification unique de chaque téléphone, comme une plaque d'immatriculation. Il est permanent et ne change jamais. Si un téléphone est signalé volé, son IMEI est bloqué et il ne peut plus se connecter à aucun réseau. On le consulte en tapant *#06#.",
+          sy: [
+            "IMEI sur liste noire : le téléphone ne capte aucun réseau même avec une SIM valide",
+            "IMEI affiché 000000 : la puce de communication est endommagée",
+          ],
+        },
 
-        {c:"lock",e:"Hard Brick",k:"Brique matérielle",
-        d:"La forme la plus grave de panne : le téléphone est complètement mort à cause d'une défaillance physique interne. Aucune restauration logicielle ne peut le réparer — une réparation de la carte mère est nécessaire.",
-        sy:["Aucune réaction, même en branchant sur un ordinateur","Ni mode DFU ni mode de récupération ne sont accessibles","Le téléphone est complètement silencieux et noir"]},
+        {
+          c: "lock",
+          e: "Hard Brick",
+          k: "Brique matérielle",
+          d: "La forme la plus grave de panne : le téléphone est complètement mort à cause d'une défaillance physique interne. Aucune restauration logicielle ne peut le réparer — une réparation de la carte mère est nécessaire.",
+          sy: [
+            "Aucune réaction, même en branchant sur un ordinateur",
+            "Ni mode DFU ni mode de récupération ne sont accessibles",
+            "Le téléphone est complètement silencieux et noir",
+          ],
+        },
 
-        {c:"lock",e:"Hard Reset",k:"Redémarrage forcé",
-        d:"Une combinaison de boutons qui force le téléphone à redémarrer sans effacer aucune donnée. C'est la première chose à essayer quand l'écran est figé ou que le téléphone ne répond plus.",
-        sy:["L'écran est figé et ne répond plus à rien","Le téléphone s'est bloqué sur une application"]},
+        {
+          c: "lock",
+          e: "Hard Reset",
+          k: "Redémarrage forcé",
+          d: "Une combinaison de boutons qui force le téléphone à redémarrer sans effacer aucune donnée. C'est la première chose à essayer quand l'écran est figé ou que le téléphone ne répond plus.",
+          sy: [
+            "L'écran est figé et ne répond plus à rien",
+            "Le téléphone s'est bloqué sur une application",
+          ],
+        },
 
-        {c:"lock",e:"DFU Restore",k:"Restauration complète (DFU)",
-        d:"La réinstallation complète d'iOS depuis le mode DFU. iOS est entièrement effacé et réinstallé depuis zéro. Toutes les données personnelles sont perdues.",
-        sy:["Le téléphone ne démarre plus et aucune restauration normale ne fonctionne"]},
+        {
+          c: "lock",
+          e: "DFU Restore",
+          k: "Restauration complète (DFU)",
+          d: "La réinstallation complète d'iOS depuis le mode DFU. iOS est entièrement effacé et réinstallé depuis zéro. Toutes les données personnelles sont perdues.",
+          sy: [
+            "Le téléphone ne démarre plus et aucune restauration normale ne fonctionne",
+          ],
+        },
 
-        {c:"lock",e:"Firmware",k:"Logiciel interne des puces",
-        d:"Le logiciel intégré directement dans les puces du téléphone pour les faire fonctionner. iOS en est l'exemple principal, mais chaque puce a aussi son propre logiciel interne. S'il est corrompu, la puce cesse de fonctionner.",
-        sy:["Panne d'une fonction précise sans cause physique apparente","Apparu après une mise à jour interrompue"]},
+        {
+          c: "lock",
+          e: "Firmware",
+          k: "Logiciel interne des puces",
+          d: "Le logiciel intégré directement dans les puces du téléphone pour les faire fonctionner. iOS en est l'exemple principal, mais chaque puce a aussi son propre logiciel interne. S'il est corrompu, la puce cesse de fonctionner.",
+          sy: [
+            "Panne d'une fonction précise sans cause physique apparente",
+            "Apparu après une mise à jour interrompue",
+          ],
+        },
 
-        {c:"lock",e:"Baseband Error",k:"Erreur de la puce de communication",
-        d:"La puce qui gère les appels, SMS et données mobiles est défaillante ou son logiciel interne est corrompu. Le téléphone perd tout réseau mobile et le numéro IMEI peut disparaître.",
-        sy:["Plus aucun réseau mobile après une restauration","L'IMEI est affiché 000000","La version du logiciel de communication est absente dans les réglages"]},
+        {
+          c: "lock",
+          e: "Baseband Error",
+          k: "Erreur de la puce de communication",
+          d: "La puce qui gère les appels, SMS et données mobiles est défaillante ou son logiciel interne est corrompu. Le téléphone perd tout réseau mobile et le numéro IMEI peut disparaître.",
+          sy: [
+            "Plus aucun réseau mobile après une restauration",
+            "L'IMEI est affiché 000000",
+            "La version du logiciel de communication est absente dans les réglages",
+          ],
+        },
       ];
 
       const CLBL = {
@@ -590,9 +1075,10 @@
           count += items.length;
           const mkCard = (d) => {
             const id = slug(d.e);
-            const syH = d.sy && d.sy.length
-              ? `<div class="sec"><div class="slbl">Ce que vous observez</div><div class="slist">${d.sy.map((s) => `<div class="si">${esc(s)}</div>`).join("")}</div></div>`
-              : "";
+            const syH =
+              d.sy && d.sy.length
+                ? `<div class="sec"><div class="slbl">Ce que vous observez</div><div class="slist">${d.sy.map((s) => `<div class="si">${esc(s)}</div>`).join("")}</div></div>`
+                : "";
             return `<div class="card" id="${id}" onclick="tog('${id}')">
 <div class="ctop">
   <div class="cleft">
@@ -609,8 +1095,14 @@
 </div>
 </div>`;
           };
-          const L = items.filter((_, i) => i % 2 === 0).map(mkCard).join("");
-          const R = items.filter((_, i) => i % 2 === 1).map(mkCard).join("");
+          const L = items
+            .filter((_, i) => i % 2 === 0)
+            .map(mkCard)
+            .join("");
+          const R = items
+            .filter((_, i) => i % 2 === 1)
+            .map(mkCard)
+            .join("");
           html += `<div class="clbl">${CLBL[cat]}</div>`;
           html += `<div class="col-wrap"><div class="col-l">${L}</div><div class="col-r">${R}</div></div>`;
         });
@@ -621,12 +1113,14 @@
 
       function renderSubset(slugSet) {
         const lst = document.getElementById("lst");
-        const items = D.filter(d => slugSet.has(slug(d.e)));
+        const items = D.filter((d) => slugSet.has(slug(d.e)));
         const mkCard = (d) => {
-          const cat = d.c, id = slug(d.e);
-          const syH = d.sy && d.sy.length
-            ? `<div class="sec"><div class="slbl">Ce que vous observez</div><div class="slist">${d.sy.map(s => `<div class="si">${esc(s)}</div>`).join("")}</div></div>`
-            : "";
+          const cat = d.c,
+            id = slug(d.e);
+          const syH =
+            d.sy && d.sy.length
+              ? `<div class="sec"><div class="slbl">Ce que vous observez</div><div class="slist">${d.sy.map((s) => `<div class="si">${esc(s)}</div>`).join("")}</div></div>`
+              : "";
           return `<div class="card" id="${id}" onclick="tog('${id}')">
 <div class="ctop">
   <div class="cleft">
@@ -643,8 +1137,14 @@
 </div>
 </div>`;
         };
-        const L = items.filter((_,i) => i%2===0).map(mkCard).join("");
-        const R = items.filter((_,i) => i%2===1).map(mkCard).join("");
+        const L = items
+          .filter((_, i) => i % 2 === 0)
+          .map(mkCard)
+          .join("");
+        const R = items
+          .filter((_, i) => i % 2 === 1)
+          .map(mkCard)
+          .join("");
         lst.innerHTML = `<div class="col-wrap"><div class="col-l">${L}</div><div class="col-r">${R}</div></div>`;
       }
 
@@ -660,18 +1160,22 @@
         // ?terms=water-damage,short-circuit → show only those cards, all open
         const termsParam = params.get("terms");
         if (termsParam) {
-          const ids = termsParam.split(",").map(s => s.trim()).filter(Boolean);
+          const ids = termsParam
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
           // filter D to only those slugs
           const slugSet = new Set(ids);
           // temporary override: show only matching entries
           renderSubset(slugSet);
           setTimeout(() => {
-            ids.forEach(id => {
+            ids.forEach((id) => {
               const el = document.getElementById(id);
               if (el) el.classList.add("open");
             });
             const first = document.getElementById(ids[0]);
-            if (first) first.scrollIntoView({ behavior: "smooth", block: "start" });
+            if (first)
+              first.scrollIntoView({ behavior: "smooth", block: "start" });
           }, 80);
           return;
         }
