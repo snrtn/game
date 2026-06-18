@@ -356,6 +356,46 @@
           sy: [],
         },
 
+        {
+          c: "solder",
+          e: "Jumper Wire",
+          k: "Fil de pontage",
+          d: "Un fil très fin soudé sur la carte mère pour relier deux points dont la connexion a été coupée. C'est ce qui permet de réparer une piste interne endommagée sans remplacer toute la carte.",
+          sy: [],
+        },
+
+        {
+          c: "solder",
+          e: "Pad Restoration",
+          k: "Restauration de pad",
+          d: "Un pad est le petit point de cuivre sur lequel se soude un composant. Quand ce point est arraché ou endommagé, il est reconstitué en cuivre pour permettre une nouvelle soudure.",
+          sy: [],
+        },
+
+        {
+          c: "solder",
+          e: "Trace Repair",
+          k: "Réparation de piste",
+          d: "Une piste est une fine ligne de cuivre à l'intérieur de la carte mère qui conduit l'électricité entre deux composants. Quand elle est coupée suite à une fissure ou une corrosion, elle doit être réparée pour rétablir la connexion.",
+          sy: [],
+        },
+
+        {
+          c: "solder",
+          e: "Micro Soldering",
+          k: "Microsoudure",
+          d: "Soudure de composants extrêmement petits — de la taille d'un grain de sable — qui nécessite un microscope pour être réalisée avec précision.",
+          sy: [],
+        },
+
+        {
+          c: "solder",
+          e: "BGA Rework",
+          k: "Refonte BGA",
+          d: "Le BGA (Ball Grid Array) désigne un type de puce connectée à la carte via des billes de soudure. La refonte BGA regroupe l'ensemble des opérations sur ce type de puce : remplacement des billes, repositionnement ou remplacement de la puce elle-même.",
+          sy: [],
+        },
+
         // ── DOMMAGES ──
         {
           c: "damage",
@@ -845,6 +885,51 @@
           sy: [
             "Plusieurs fonctions en panne en même temps",
             "Le téléphone ne répond à rien malgré une batterie chargée",
+          ],
+        },
+
+        {
+          c: "parts",
+          e: "Resistor",
+          k: "Résistance",
+          d: "Un composant minuscule qui régule le flux d'électricité dans un circuit. Sa panne peut couper ou perturber la fonction alimentée par ce circuit.",
+          sy: [],
+        },
+
+        {
+          c: "parts",
+          e: "Diode",
+          k: "Diode",
+          d: "Un composant qui ne laisse passer le courant que dans un seul sens. Elle protège les circuits contre les surtensions et les inversions de courant.",
+          sy: [],
+        },
+
+        {
+          c: "parts",
+          e: "MOSFET",
+          k: "Transistor MOSFET",
+          d: "Un composant qui fonctionne comme un interrupteur électronique, contrôlant le passage du courant dans un circuit selon les besoins du téléphone.",
+          sy: [],
+        },
+
+        {
+          c: "parts",
+          e: "Proximity Sensor",
+          k: "Capteur de proximité",
+          d: "Capteur situé en haut de l'écran qui détecte quand le téléphone est approché de l'oreille. Il éteint automatiquement l'écran pendant les appels pour éviter des appuis accidentels.",
+          sy: [
+            "L'écran ne s'éteint pas pendant les appels — des appuis accidentels se produisent",
+          ],
+        },
+
+        {
+          c: "parts",
+          e: "Earpiece",
+          k: "Écouteur interne",
+          d: "Le petit haut-parleur situé en haut du téléphone, utilisé uniquement pour entendre votre interlocuteur pendant les appels. Distinct du haut-parleur externe utilisé pour la musique.",
+          sy: [
+            "L'interlocuteur ne s'entend plus ou très faiblement pendant les appels",
+            "Aucun son dans l'écouteur d'oreille (mais le haut-parleur externe fonctionne)",
           ],
         },
 
