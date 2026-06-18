@@ -1,470 +1,730 @@
 <!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <title>NOVA-1 PCB</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    html,body{
-      width:100%;height:100%;
-      background:#000;
-      display:flex;align-items:center;justify-content:center;
-      overflow:hidden;
-      font-family:monospace;
-    }
-    canvas{display:block;touch-action:none;}
-    #tooltip{
-      position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-      background:rgba(0,20,8,0.92);
-      border:1px solid rgba(0,220,100,0.3);
-      color:#7effa0;
-      font:11px monospace;letter-spacing:1px;
-      padding:8px 18px;border-radius:20px;
-      pointer-events:none;opacity:0;transition:opacity .25s;
-      white-space:nowrap;
-    }
-    #tooltip.on{opacity:1;}
-  </style>
-</head>
-<body>
-<canvas id="cv"></canvas>
-<div id="tooltip" id="tt"></div>
-<script>
-const cv=document.getElementById("cv");
-const ctx=cv.getContext("2d");
-const tt=document.getElementById("tooltip");
-let W,H,scale,ox,oy;
-const BW=360,BH=660; // board logical size
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>Lexique Réparation Mobile</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      :root {
+        --bg: #0c0c10;
+        --s: #141418;
+        --b: #22222a;
+        --t: #e8e8f0;
+        --m: #72728a;
+        --a: #4f8eff;
+      }
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        background: var(--bg);
+        color: var(--t);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .hdr {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(12, 12, 16, 0.94);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--b);
+        padding: 14px 18px 12px;
+      }
+      .hdr h1 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      .hdr h1 span {
+        color: var(--a);
+      }
+      .sw {
+        position: relative;
+      }
+      .sw svg {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.4;
+        pointer-events: none;
+      }
+      #q {
+        width: 100%;
+        background: #1c1c24;
+        border: 1px solid var(--b);
+        border-radius: 10px;
+        color: var(--t);
+        font-size: 15px;
+        padding: 9px 12px 9px 36px;
+        outline: none;
+        transition: border-color 0.18s;
+      }
+      #q:focus {
+        border-color: #4f8eff55;
+      }
+      #q::placeholder {
+        color: var(--m);
+      }
+      .tabs {
+        display: flex;
+        gap: 7px;
+        padding: 11px 18px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .tab {
+        flex-shrink: 0;
+        background: var(--s);
+        border: 1px solid var(--b);
+        border-radius: 18px;
+        color: var(--m);
+        font-size: 12px;
+        font-weight: 500;
+        padding: 5px 13px;
+        cursor: pointer;
+        transition: all 0.16s;
+        white-space: nowrap;
+      }
+      .tab.on {
+        background: var(--a);
+        border-color: var(--a);
+        color: #fff;
+      }
+      .lst {
+        padding: 0 14px 80px;
+      }
+      .col-wrap { display: flex; flex-direction: column; gap: 9px; }
+      .col-l, .col-r { display: flex; flex-direction: column; gap: 9px; }
+      @media (min-width: 720px) {
+        .lst { padding: 0 24px 80px; }
+        .col-wrap { flex-direction: row; align-items: flex-start; }
+        .col-l, .col-r { flex: 1; min-width: 0; }
+      }
+      .clbl {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.8px;
+        color: var(--m);
+        text-transform: uppercase;
+        padding: 18px 4px 8px;
+      }
+      .card {
+        background: var(--s);
+        border: 1px solid var(--b);
+        border-radius: 14px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: border-color 0.16s;
+      }
+      .card.open {
+        border-color: #4f8eff33;
+      }
+      .card.highlight {
+        border-color: #ffcc4466;
+        box-shadow: 0 0 0 2px #ffcc4422;
+      }
+      .ctop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 14px 15px;
+      }
+      .cleft {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-width: 0;
+      }
+      .cbadge {
+        flex-shrink: 0;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .cname {
+        min-width: 0;
+      }
+      .cen {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+      }
+      .ckr {
+        font-size: 11px;
+        color: var(--m);
+        margin-top: 1px;
+      }
+      .chev {
+        flex-shrink: 0;
+        color: var(--m);
+        font-size: 11px;
+        transition: transform 0.22s;
+      }
+      .card.open .chev {
+        transform: rotate(180deg);
+      }
+      .cbody {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.32s ease;
+      }
+      .card.open .cbody {
+        max-height: 900px;
+      }
+      .cinner {
+        padding: 14px 15px 16px;
+        border-top: 1px solid var(--b);
+      }
+      .sec {
+        margin-bottom: 13px;
+      }
+      .sec:last-child {
+        margin-bottom: 0;
+      }
+      .slbl {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: var(--m);
+        text-transform: uppercase;
+        margin-bottom: 7px;
+      }
+      .stxt {
+        font-size: 14px;
+        line-height: 1.85;
+        color: #c8c8d8;
+      }
+      .slist {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .si {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        font-size: 14px;
+        line-height: 1.65;
+        color: #c0c0d4;
+      }
+      .si::before {
+        content: "·";
+        color: var(--a);
+        flex-shrink: 0;
+        font-size: 16px;
+        margin-top: -0.05em;
+      }
+      .empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--m);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hdr">
+      <h1>📱 Lexique <span>Réparation Mobile</span></h1>
+      <div class="sw">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input
+          id="q"
+          type="search"
+          placeholder="Rechercher un terme..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab on" data-c="all">Tout</div>
+      <div class="tab" data-c="solder">Soudure</div>
+      <div class="tab" data-c="damage">Dommages</div>
+      <div class="tab" data-c="parts">Composants</div>
+      <div class="tab" data-c="diag">Diagnostic</div>
+      <div class="tab" data-c="lock">Verrouillage</div>
+    </div>
+    <div class="lst" id="lst"></div>
+    <script>
+      const D = [
+        // ── SOUDURE ──
+        {c:"solder",e:"Short Circuit",k:"Court-circuit",
+        d:"Un court-circuit, c'est quand deux points à l'intérieur du téléphone qui ne devraient pas être reliés le sont. Ça fait passer un courant excessif, ce qui provoque une surchauffe soudaine ou une extinction immédiate.",
+        sy:["Le téléphone chauffe à un endroit précis, même sans l'utiliser","Il s'éteint dès qu'on branche la batterie ou le chargeur","Il ne s'allume plus du tout"]},
 
-function resize(){
-  W=window.innerWidth; H=window.innerHeight;
-  cv.width=W; cv.height=H;
-  scale=Math.min(W/BW,H/BH)*.94;
-  ox=(W-BW*scale)/2; oy=(H-BH*scale)/2;
-}
-resize();
-window.addEventListener("resize",resize);
+        {c:"solder",e:"Cold Solder Joint",k:"Soudure froide",
+        d:"Une soudure froide, c'est une connexion sur la carte mère où l'étain n'a pas bien adhéré. Le contact est instable — la panne peut apparaître et disparaître selon la température ou les vibrations.",
+        sy:["Une fonction revient quand le téléphone chauffe légèrement puis disparaît à nouveau","Le Wi-Fi, le son ou le tactile marche de façon intermittente sans raison apparente"]},
 
-function s(x,y){return{x:ox+x*scale,y:oy+y*scale};}
-function sr(x,y,w,h){
-  const p=s(x,y);
-  return{x:p.x,y:p.y,w:w*scale,h:h*scale};
-}
+        {c:"solder",e:"Missing Ball",k:"Bille de soudure manquante",
+        d:"À l'intérieur du téléphone, certaines puces sont fixées à la carte par de minuscules points de soudure en forme de billes. Quand une bille se détache — souvent après une chute — la connexion qu'elle assurait est coupée, et la fonction qui en dépend s'arrête.",
+        sy:["Une seule fonction précise ne marche plus (ex. : la caméra mais pas le Wi-Fi)","Apparu juste après une chute"]},
 
-/* ── COMPONENTS ── */
-const CHIPS=[
-  // id, label, x, y, w, h, type, desc
-  {id:"SOC",    lbl:"APX-1\nSoC",       x:178,y:268, w:96,h:88, t:"cpu",  desc:"APX-1 · 3nm · 6-core CPU · 8-core GPU"},
-  {id:"RAM0",   lbl:"LPDDR5X",          x:76, y:248, w:64,h:38, t:"mem",  desc:"LPDDR5X · 16GB · 6400MHz"},
-  {id:"RAM1",   lbl:"LPDDR5X",          x:76, y:298, w:64,h:38, t:"mem",  desc:"LPDDR5X · 16GB · 6400MHz"},
-  {id:"NAND",   lbl:"NAND\n512GB",      x:293,y:262, w:58,h:46, t:"mem",  desc:"NAND Flash · 512GB · NVMe"},
-  {id:"PMIC",   lbl:"PMU",              x:52, y:46,  w:52,h:38, t:"pwr",  desc:"Power Management IC · 3.25V ACC"},
-  {id:"CHG",    lbl:"Charging\nIC",     x:156,y:44,  w:56,h:38, t:"pwr",  desc:"Wireless + Wired Charging IC"},
-  {id:"WLAN",   lbl:"WLAN+BT\nModule", x:267,y:38,  w:82,h:56, t:"rf",   desc:"Wi-Fi 7 · Bluetooth 5.4 · UWB"},
-  {id:"BBPMU",  lbl:"BBPMU",           x:52, y:126, w:48,h:34, t:"pwr",  desc:"Baseband Power Management"},
-  {id:"USB",    lbl:"USB\nCtrl",        x:158,y:124, w:50,h:34, t:"ic",   desc:"USB 3.2 · DisplayPort · MagSafe"},
-  {id:"RF",     lbl:"RF\nCoupler",      x:306,y:122, w:44,h:30, t:"rf",   desc:"Wi-Fi Antenna Signal Coupler"},
-  {id:"GYRO",   lbl:"Gyro",            x:52, y:50,  w:36,h:26, t:"ic",   desc:"6-axis Gyroscope + Accelerometer"},
-  {id:"LOGIC",  lbl:"Logic\nEEPROM",   x:52, y:340, w:42,h:32, t:"ic",   desc:"Boot ROM · Secure Enclave Logic"},
-  {id:"BB",     lbl:"Baseband",        x:60, y:406, w:72,h:54, t:"cpu",  desc:"Baseband Processor · 5G Sub-6 + mmWave"},
-  {id:"PA0",    lbl:"PA",              x:50, y:482, w:36,h:26, t:"rf",   desc:"Power Amplifier · Sub-6GHz"},
-  {id:"PA1",    lbl:"PA",              x:98, y:482, w:36,h:26, t:"rf",   desc:"Power Amplifier · mmWave"},
-  {id:"DISP",   lbl:"Display\nIC",     x:272,y:402, w:64,h:44, t:"ic",   desc:"ProMotion Display Driver IC"},
-  {id:"TOUCH",  lbl:"Touch\nCtrl",     x:166,y:420, w:52,h:36, t:"ic",   desc:"Touchscreen Controller"},
-  {id:"AUDIO",  lbl:"Audio\nCodec",    x:186,y:486, w:54,h:38, t:"ic",   desc:"Hi-Fi Audio Codec · Spatial Audio"},
-  {id:"NFC",    lbl:"NFC",             x:282,y:484, w:46,h:34, t:"rf",   desc:"NFC Controller · Apple Pay"},
-  {id:"CAMPMIC",lbl:"Cam\nPMIC",       x:52, y:556, w:46,h:32, t:"pwr",  desc:"Camera 3.2V Power Supply"},
-  {id:"FACEID", lbl:"Face ID\nPMIC",   x:146,y:556, w:54,h:32, t:"ic",   desc:"Face ID · Structured Light Sensor"},
-  {id:"CAMCONN",lbl:"CAM\nConn",       x:272,y:558, w:58,h:36, t:"ic",   desc:"Rear Camera Array Connector"},
-  {id:"NFC_P",  lbl:"NFC_P",           x:52, y:612, w:38,h:26, t:"rf",   desc:"NFC Passive Antenna"},
-  {id:"NFC_F",  lbl:"NFC_F",           x:104,y:612, w:38,h:26, t:"rf",   desc:"NFC Field Detector"},
-  {id:"SMALL1", lbl:"Small\nAudio",    x:220,y:562, w:34,h:24, t:"ic",   desc:"Secondary Speaker Amplifier"},
-  {id:"ROSE",   lbl:"ROSE",            x:310,y:614, w:36,h:26, t:"ic",   desc:"Secure Element · eSIM Controller"},
-];
 
-const TYPE_COL={
-  cpu:"#1a1a2e",mem:"#1a2a1a",pwr:"#2a1a10",
-  rf:"#12101e",ic:"#141414",
-};
-const TYPE_BORDER={
-  cpu:"#5566ff",mem:"#44ff88",pwr:"#ff8844",
-  rf:"#cc44ff",ic:"#448888",
-};
+        {c:"solder",e:"Reballing",k:"Rebillage",
+        d:"Le rebillage, c'est le remplacement des billes de soudure sous une puce. Ces minuscules billes assurent les connexions entre la puce et la carte mère. Elles peuvent se détacher suite à une chute ou une immersion.",
+        sy:["Une seule fonction précise ne répond plus après une chute ou une immersion"]},
 
-/* ── TRACES ── */
-/* each trace: points[], color, animated, speed multiplier, width */
-const TRACES=[
-  // SOC ↔ RAM (data bus – cyan)
-  {pts:[{x:178,y:268},{x:152,y:268}],             col:"#00ffcc",anim:true, sp:1.4, w:1.5},
-  {pts:[{x:178,y:295},{x:152,y:295},{x:152,y:280}],col:"#00ffcc",anim:true, sp:1.2, w:1.5},
-  {pts:[{x:178,y:310},{x:152,y:310},{x:152,y:317}],col:"#00ffcc",anim:true, sp:1.1, w:1.5},
+        {c:"solder",e:"Reflow",k:"Refusion",
+        d:"La refusion, c'est le réchauffage des soudures existantes pour qu'elles se reforment correctement, sans remplacer la puce. Les connexions qui se sont fragilisées avec le temps peuvent ainsi être restaurées.",
+        sy:["Panne intermittente qui va et vient sans raison apparente"]},
 
-  // SOC ↔ NAND (storage – cyan)
-  {pts:[{x:274,y:272},{x:293,y:272}],             col:"#00ffcc",anim:true, sp:0.9, w:1.5},
-  {pts:[{x:274,y:288},{x:293,y:295}],             col:"#00ffcc",anim:true, sp:0.8, w:1.5},
+        {c:"solder",e:"Underfill",k:"Résine de protection (Underfill)",
+        d:"Résine appliquée sous certaines puces pour les maintenir solidement sur la carte mère et protéger leurs connexions des chocs.",
+        sy:[]},
 
-  // PMIC power rails (orange)
-  {pts:[{x:104,y:65},{x:140,y:65},{x:140,y:110},{x:178,y:280}], col:"#ff7722",anim:false,w:2},
-  {pts:[{x:104,y:65},{x:156,y:65}],               col:"#ff7722",anim:false,w:2},
-  {pts:[{x:52, y:126},{x:52,y:95},{x:52,y:65}],   col:"#ff7722",anim:false,w:1.5},
+        // ── DOMMAGES ──
+        {c:"damage",e:"Water Damage",k:"Dégâts des eaux",
+        d:"Dommage causé par un contact avec l'eau ou un autre liquide. L'humidité peut provoquer des courts-circuits immédiats. Même si le téléphone semble fonctionner juste après, la corrosion progresse à l'intérieur et des pannes apparaissent parfois des jours ou semaines plus tard.",
+        sy:["Le téléphone s'est éteint au contact du liquide et ne redémarre pas","Plusieurs fonctions tombent en panne en même temps : micro, charge, haut-parleur","Des traces vertes ou blanches visibles à l'intérieur (corrosion)","Pannes progressives après une exposition à l'humidité"]},
 
-  // CHG → PMIC
-  {pts:[{x:156,y:63},{x:132,y:63}],               col:"#ff9944",anim:false,w:1.5},
+        {c:"damage",e:"Impact Damage",k:"Dommage par chute",
+        d:"Dommage interne causé par une chute. L'écran peut rester intact, mais à l'intérieur des pièces peuvent s'être décrochées, des connexions fissurées ou des câbles détachés sans que ça soit visible de l'extérieur.",
+        sy:["Une fonction précise disparaît juste après une chute","L'écran fonctionne mais une autre fonction (caméra, son, réseau) ne répond plus","Pannes apparues quelques heures après la chute"]},
 
-  // WLAN → SOC (blue)
-  {pts:[{x:267,y:66},{x:230,y:66},{x:230,y:180},{x:226,y:268}], col:"#4499ff",anim:true, sp:1.0, w:1.5},
+        {c:"damage",e:"Oxidation",k:"Oxydation",
+        d:"Corrosion des parties métalliques à l'intérieur du téléphone due à l'humidité. On la reconnaît à des dépôts verts ou blancs sur les connecteurs. Elle perturbe les connexions et s'aggrave avec le temps si elle n'est pas traitée.",
+        sy:["Problèmes de charge intermittents sans raison apparente","Connecteur qui ne répond plus après une exposition à l'humidité","Contact de batterie capricieux"]},
 
-  // USB → SOC
-  {pts:[{x:183,y:158},{x:183,y:268}],             col:"#4499ff",anim:true, sp:0.7, w:1.5},
+        {c:"damage",e:"Overheating",k:"Surchauffe",
+        d:"Une partie du téléphone chauffe de manière anormale. Cela peut indiquer un court-circuit, une batterie défaillante ou une puce endommagée. Si la surchauffe persiste, elle risque d'abîmer d'autres parties du téléphone.",
+        sy:["Le téléphone est anormalement chaud en main, même sans l'utiliser","Il chauffe beaucoup plus vite que d'habitude pendant la charge","La batterie se vide très rapidement","Il s'éteint de lui-même à cause de la chaleur"]},
 
-  // RF ← WLAN
-  {pts:[{x:306,y:137},{x:306,y:94},{x:349,y:94}], col:"#cc44ff",anim:true, sp:1.5, w:1},
+        {c:"damage",e:"Battery Swelling",k:"Gonflement de batterie",
+        d:"La batterie gonfle physiquement suite à une accumulation de gaz à l'intérieur. C'est une situation dangereuse car une batterie gonflée peut se percer ou prendre feu. Elle ne doit jamais être percée ni pliée.",
+        sy:["Le dos du téléphone est bombé ou se soulève","L'écran se décolle ou est poussé vers l'extérieur","La batterie se décharge beaucoup plus vite qu'avant","Le téléphone n'est plus plat — il bascule sur une surface"]},
 
-  // BB → SOC (baseband data)
-  {pts:[{x:132,y:433},{x:132,y:380},{x:178,y:320}], col:"#4499ff",anim:true, sp:0.85, w:1.5},
+        {c:"damage",e:"PCB Crack",k:"Fissure de carte mère",
+        d:"La carte mère s'est fissurée physiquement après une chute ou une torsion du téléphone. Cette fissure coupe des connexions internes invisibles à l'œil nu, ce qui met en panne uniquement les fonctions qui dépendent de ces connexions.",
+        sy:["Après une chute, une fonction précise cesse de marcher (ex. : la 4G mais pas le Wi-Fi)","Le problème apparaît et disparaît selon la façon dont on tient le téléphone","Panne progressive après une chute sur un angle"]},
 
-  // BB → PA0/PA1
-  {pts:[{x:68,y:460},{x:68,y:482}],               col:"#cc44ff",anim:true, sp:1.8, w:1},
-  {pts:[{x:96,y:460},{x:116,y:482}],              col:"#cc44ff",anim:true, sp:1.6, w:1},
+        {c:"damage",e:"Ghost Touch",k:"Touches fantômes",
+        d:"L'écran réagit à des touches que personne ne fait. Cela peut venir de l'écran lui-même qui est endommagé, de la puce qui gère le tactile, ou d'une perturbation électrique provenant du chargeur.",
+        sy:["L'écran réagit seul : applications qui s'ouvrent, texte tapé automatiquement","Ça empire pendant la charge","Se produit toujours au même endroit sur l'écran"]},
 
-  // BBPMU → BB
-  {pts:[{x:76,y:143},{x:76,y:406}],               col:"#ff7722",anim:false,w:1.5},
+        {c:"damage",e:"Green Line",k:"Ligne verte / rose sur l'écran",
+        d:"Une ligne colorée verticale apparaît sur les écrans OLED après un choc. Le verre peut sembler intact, mais l'intérieur du panneau est endommagé. Ces lignes ont tendance à s'élargir avec le temps.",
+        sy:["Après une chute, une ligne de couleur apparaît verticalement sur l'écran","La ligne s'élargit ou se multiplie progressivement","L'image est normale partout sauf sur cette bande"]},
 
-  // SOC → DISP
-  {pts:[{x:226,y:356},{x:226,y:390},{x:272,y:424}],col:"#00aaff",anim:true, sp:0.9, w:1.5},
+        {c:"damage",e:"Backlight Failure",k:"Panne du rétroéclairage",
+        d:"Sur les écrans LCD, une lumière placée derrière le panneau permet d'afficher l'image. Quand cette lumière tombe en panne, l'écran semble éteint — mais l'image est toujours là, invisible à l'œil nu. En éclairant l'écran avec une lampe, on peut la voir très faiblement. Ce problème n'existe pas sur les écrans OLED.",
+        sy:["L'écran semble éteint mais le téléphone sonne et vibre normalement","En éclairant l'écran avec une lampe torche, on distingue l'image très faiblement","La luminosité ne peut plus être réglée"]},
 
-  // SOC → TOUCH
-  {pts:[{x:192,y:356},{x:192,y:420}],             col:"#00aaff",anim:true, sp:0.7, w:1},
+        {c:"damage",e:"Burn-in",k:"Marquage d'écran (Burn-in)",
+        d:"Sur les écrans OLED, quand les mêmes éléments sont affichés au même endroit pendant des années — barre de statut, boutons — ces zones vieillissent plus vite et laissent une empreinte fantôme permanente. C'est une usure normale du panneau, non réparable.",
+        sy:["Sur fond uni clair, on voit en transparence l'ancienne interface","La trace est surtout à l'emplacement de la barre du haut ou des boutons","Apparaît progressivement sur les téléphones de plus de 2-3 ans"]},
 
-  // SOC → AUDIO
-  {pts:[{x:213,y:356},{x:213,y:486}],             col:"#00ffaa",anim:true, sp:0.6, w:1},
+        {c:"damage",e:"Touch ID Failure",k:"Panne du Touch ID",
+        d:"Le lecteur d'empreintes est associé de façon unique à la carte mère dès la fabrication en usine. Si le bouton Home est remplacé par une pièce non originale, Touch ID est définitivement désactivé — c'est une mesure de sécurité Apple.",
+        sy:["Impossible d'enregistrer une empreinte après un remplacement du bouton Home","Message 'Touch ID non disponible'","Erreur 53 lors d'une restauration iTunes"]},
 
-  // SOC → NFC
-  {pts:[{x:254,y:340},{x:282,y:340},{x:282,y:484}],col:"#aa44ff",anim:true, sp:0.5, w:1},
+        {c:"damage",e:"Microphone Failure",k:"Panne du microphone",
+        d:"Le téléphone possède plusieurs microphones selon les usages (appels, vidéo, assistant vocal). Quand l'un tombe en panne, seule la fonction liée à ce microphone est affectée, les autres continuent de fonctionner.",
+        sy:["Votre interlocuteur ne vous entend pas pendant les appels","Siri ou l'assistant vocal ne reconnaît plus la voix","Les vidéos enregistrées n'ont pas de son","Apparu après une immersion"]},
 
-  // SOC → FACEID
-  {pts:[{x:178,y:356},{x:178,y:490},{x:173,y:556}],col:"#00ffcc",anim:false,w:1},
+        {c:"damage",e:"Speaker Failure",k:"Panne du haut-parleur",
+        d:"Le téléphone a deux haut-parleurs distincts : l'écouteur d'oreille pour les appels, et le haut-parleur externe pour la musique et les vidéos. Une panne peut toucher l'un sans affecter l'autre.",
+        sy:["Aucun son lors des appels (l'interlocuteur ne s'entend plus)","Pas de son pour la musique ou les vidéos","Son grésillant ou crachotant, surtout à volume élevé","Apparu après une chute ou une immersion"]},
 
-  // SOC → LOGIC
-  {pts:[{x:178,y:305},{x:130,y:305},{x:94,y:356}], col:"#44ff88",anim:false,w:1},
+        {c:"damage",e:"Camera Fog",k:"Buée dans l'objectif",
+        d:"De l'humidité s'est infiltrée à l'intérieur de l'objectif de la caméra. Les photos apparaissent voilées ou floues, et la buée revient à chaque changement de température.",
+        sy:["Les photos sont floues ou voilées","La buée disparaît puis revient selon la température","Visible à l'œil nu sur le verre de l'objectif"]},
 
-  // CAMPMIC ← PMIC
-  {pts:[{x:52,y:556},{x:52,y:500},{x:52,y:160}],  col:"#ff7722",anim:false,w:1.5},
+        {c:"damage",e:"No Service",k:"Absence de réseau",
+        d:"Le téléphone ne parvient pas à se connecter au réseau mobile. Cela peut venir d'un problème logiciel, ou d'une puce interne qui gère les communications et qui est endommagée.",
+        sy:["Barres de signal absentes ou 'Pas de service' affiché en permanence","Impossible de passer ou recevoir des appels et des SMS","L'IMEI affiché est 000000"]},
 
-  // CAMCONN ← SOC
-  {pts:[{x:274,y:328},{x:301,y:328},{x:301,y:558}],col:"#00ffcc",anim:false,w:1},
+        {c:"damage",e:"Boot Loop",k:"Boucle de démarrage",
+        d:"Le téléphone s'allume, affiche le logo, s'éteint, et recommence indéfiniment sans jamais terminer de démarrer. Peut venir d'un problème logiciel ou d'une panne matérielle interne.",
+        sy:["Le logo de la marque s'affiche puis le téléphone redémarre en boucle","Impossible d'atteindre l'écran d'accueil","Se bloque toujours au même stade du démarrage"]},
 
-  // GYRO → SOC
-  {pts:[{x:88,y:63},{x:130,y:63},{x:130,y:200},{x:178,y:268}], col:"#88ffcc",anim:false,w:1},
+        {c:"damage",e:"Black Screen",k:"Écran noir",
+        d:"L'écran reste éteint bien que le téléphone fonctionne encore. Cela peut venir de l'écran lui-même, d'une connexion interne décrochée, ou d'un problème sur la carte mère.",
+        sy:["L'écran reste noir même après avoir appuyé sur le bouton d'alimentation","Le téléphone sonne ou vibre mais rien ne s'affiche"]},
 
-  // NFC_P / NFC_F ground loops
-  {pts:[{x:52,y:625},{x:104,y:625},{x:142,y:625}],col:"#884488",anim:false,w:1},
-  {pts:[{x:71,y:638},{x:71,y:648},{x:200,y:648},{x:200,y:530}], col:"#884488",anim:false,w:1},
+        {c:"damage",e:"White Screen",k:"Écran blanc",
+        d:"L'écran s'allume mais affiche uniquement du blanc, sans aucune image. Cela peut venir du panneau d'écran lui-même, d'une connexion mal emboîtée, ou de la puce qui pilote l'affichage.",
+        sy:["L'écran affiche du blanc uni en permanence","Parfois intermittent : blanc, normal quelques secondes, blanc à nouveau"]},
 
-  // ROSE ← SOC
-  {pts:[{x:274,y:312},{x:328,y:312},{x:328,y:614}],col:"#ff44cc",anim:true, sp:0.4, w:1},
-];
+        {c:"damage",e:"Half Screen",k:"Demi-écran",
+        d:"La moitié de l'écran s'affiche normalement, l'autre est noire ou d'une couleur uniforme. Cela indique un problème sur la puce qui gère l'affichage, ou une connexion interne du panneau endommagée.",
+        sy:["La moitié de l'écran est noire ou d'une seule couleur","Le tactile ne fonctionne que sur la moitié valide","Apparu juste après une chute"]},
 
-/* ── VIA HOLES ── */
-const VIAS=[
-  {x:130,y:200},{x:140,y:185},{x:155,y:185},{x:165,y:185},
-  {x:230,y:180},{x:242,y:172},{x:210,y:172},{x:198,y:165},
-  {x:130,y:380},{x:130,y:360},{x:130,y:340},
-  {x:226,y:380},{x:213,y:480},{x:282,y:340},{x:301,y:340},
-  {x:52,y:500},{x:52,y:460},{x:52,y:200},
-  {x:173,y:490},{x:192,y:380},{x:192,y:400},
-  {x:328,y:320},{x:328,y:400},{x:328,y:520},
-];
+        // ── COMPOSANTS ──
+        {c:"parts",e:"SoC",k:"Puce principale (Processeur)",
+        d:"C'est le cerveau du téléphone — la puce qui fait tout fonctionner : les applications, l'écran, les appels, la caméra. Chez Apple, c'est la puce A-series (A16, A17 Pro…). Si elle est endommagée, le téléphone ne fonctionne plus du tout.",
+        sy:["Le téléphone ne réagit plus du tout, même en chargeant","Impossible de faire quoi que ce soit, même en branchant sur un ordinateur"]},
 
-/* ── PASSIVE COMPONENTS ── */
-const PASSIVES=[];
-(function(){
-  const spots=[
-    [110,200],[125,200],[140,200],[155,200],[170,200],[185,200],[200,200],[215,200],[230,200],
-    [110,215],[140,215],[170,215],[200,215],[230,215],
-    [110,230],[140,230],[170,230],[200,230],[230,230],
-    [110,185],[125,185],[185,185],[245,185],[260,185],
-    [245,200],[260,200],[245,215],[260,215],
-    [110,370],[125,370],[140,370],[155,370],
-    [240,370],[255,370],[270,370],
-    [110,460],[140,460],[155,460],[170,460],
-    [240,460],[255,460],[280,460],
-    [110,530],[125,530],[140,530],[200,530],[215,530],[230,530],
-  ];
-  spots.forEach(([x,y])=>{
-    PASSIVES.push({x,y,type:Math.random()<.6?"cap":"res"});
-  });
-})();
+        {c:"parts",e:"NAND Flash",k:"Mémoire de stockage",
+        d:"C'est le disque dur du téléphone — l'endroit où sont enregistrés le système, les applications et les photos. Sur iPhone, cette mémoire est liée de façon sécurisée à la puce principale dès la fabrication, ce qui complique tout remplacement.",
+        sy:["L'espace de stockage s'affiche à zéro","Les restaurations via iTunes échouent (erreurs 4013 ou 4014)","Le téléphone redémarre en boucle infinie","Il ne reconnaît plus ses propres applications"]},
 
-/* ── SIGNAL ANIMATION ── */
-const pulses=TRACES.filter(t=>t.anim).map(t=>({
-  trace:t,
-  progress:Math.random(),
-  totalLen:0,
-  segLens:[],
-}));
-pulses.forEach(p=>{
-  const pts=p.trace.pts;
-  for(let i=1;i<pts.length;i++){
-    const dx=pts[i].x-pts[i-1].x,dy=pts[i].y-pts[i-1].y;
-    const l=Math.sqrt(dx*dx+dy*dy);
-    p.segLens.push(l);
-    p.totalLen+=l;
-  }
-});
-function getPulsePos(p){
-  const target=p.progress*p.totalLen;
-  let acc=0;
-  const pts=p.trace.pts;
-  for(let i=0;i<p.segLens.length;i++){
-    if(acc+p.segLens[i]>=target){
-      const t=(target-acc)/p.segLens[i];
-      return{
-        x:pts[i].x+t*(pts[i+1].x-pts[i].x),
-        y:pts[i].y+t*(pts[i+1].y-pts[i].y),
+        {c:"parts",e:"PMIC",k:"Gestionnaire d'alimentation",
+        d:"La puce qui reçoit l'énergie de la batterie et la distribue correctement à chaque partie du téléphone. Si elle tombe en panne, certaines fonctions ne reçoivent plus d'alimentation et s'arrêtent.",
+        sy:["Le téléphone s'éteint immédiatement quand on branche la batterie","Certaines fonctions tombent en panne sans raison apparente","Le téléphone refuse de charger"]},
+
+        {c:"parts",e:"Baseband",k:"Puce de communication mobile",
+        d:"La puce qui gère tout ce qui est communication mobile : appels, SMS, 4G et 5G. Elle stocke aussi le numéro IMEI du téléphone. Si elle est endommagée, le téléphone perd tout réseau mobile.",
+        sy:["Plus aucun réseau mobile — ni appels, ni SMS, ni données","'Pas de service' affiché en permanence","L'IMEI affiché est 000000"]},
+
+        {c:"parts",e:"Charging IC",k:"Puce de charge",
+        d:"La puce qui contrôle la charge de la batterie depuis le port USB. C'est elle qui régule l'entrée d'énergie pour protéger la batterie. Si elle est défaillante, le téléphone ne charge plus ou ne reconnaît plus le chargeur.",
+        sy:["Le téléphone ne charge plus du tout","Le chargeur est branché mais le pourcentage ne monte pas","Le téléphone reconnaît parfois le chargeur, parfois non"]},
+
+        {c:"parts",e:"Display IC",k:"Puce d'affichage",
+        d:"La puce qui reçoit l'image du processeur et la transmet au panneau d'écran. Si elle est défaillante, l'image ne s'affiche plus, partiellement ou complètement.",
+        sy:["L'écran reste noir alors que le téléphone fonctionne (sons, vibrations)","Seulement la moitié de l'écran s'affiche","Couleurs anormales ou lignes sur l'écran"]},
+
+        {c:"parts",e:"Touch IC",k:"Puce tactile",
+        d:"La puce qui lit les touches sur le verre de l'écran et les envoie au processeur. Si elle est défaillante, l'écran ne réagit plus aux doigts, ou au contraire réagit tout seul.",
+        sy:["L'écran ne réagit plus aux touchers","Des appuis se produisent tout seuls (touches fantômes)","Seule une zone de l'écran répond"]},
+
+        {c:"parts",e:"Audio Codec",k:"Puce audio",
+        d:"La puce qui gère tous les sons du téléphone : haut-parleur, microphone, écouteur d'oreille et prise casque. Une panne peut affecter plusieurs de ces fonctions audio simultanément.",
+        sy:["Le haut-parleur et le microphone tombent en panne en même temps","Pas de son dans l'écouteur lors des appels","Siri ne reconnaît plus la voix"]},
+
+        {c:"parts",e:"Backlight IC",k:"Puce de rétroéclairage",
+        d:"La puce qui alimente la lumière derrière les écrans LCD. Sans elle, l'image existe mais reste invisible à l'œil nu — on peut la voir uniquement en éclairant l'écran avec une lampe.",
+        sy:["L'écran semble éteint mais en l'éclairant avec une lampe torche on voit l'image faiblement","La luminosité ne peut plus être ajustée"]},
+
+        {c:"parts",e:"Face ID Module",k:"Module Face ID",
+        d:"Le module qui scanne le visage en 3D pour déverrouiller le téléphone. Il est associé de façon sécurisée à la carte mère dès la fabrication. Remplacer ce module par une pièce non originale désactive définitivement Face ID.",
+        sy:["Impossible de configurer le Face ID après une réparation","Message 'Face ID non disponible'","Apparu après une chute touchant la caméra frontale"]},
+
+        {c:"parts",e:"PA (Power Amplifier)",k:"Amplificateur de signal radio",
+        d:"La puce qui amplifie le signal avant qu'il parte vers l'antenne. Si elle est défaillante, le signal devient très faible — les appels se coupent et la 4G/5G ralentit, même quand les barres de signal sont affichées.",
+        sy:["Les barres de signal sont là mais les appels se coupent souvent","La 4G/5G est lente même avec un bon signal","Apparu après une chute"]},
+
+        {c:"parts",e:"NFC IC",k:"Puce NFC (paiement sans contact)",
+        d:"La puce qui gère le paiement sans contact (Apple Pay), les badges de transport et la lecture de tags NFC à courte distance.",
+        sy:["Impossible de payer sans contact","Les badges et tags NFC ne sont pas reconnus","Apparu après une immersion ou une chute"]},
+
+        {c:"parts",e:"WiFi+BT Module",k:"Module Wi-Fi et Bluetooth",
+        d:"Le module qui gère le Wi-Fi et le Bluetooth. Les deux fonctions partagent la même puce, donc une panne les affecte généralement toutes les deux en même temps.",
+        sy:["Le téléphone ne détecte plus aucun réseau Wi-Fi","Impossible de se connecter à un casque ou une enceinte Bluetooth","Wi-Fi et Bluetooth tombent en panne en même temps"]},
+
+        {c:"parts",e:"USB Controller",k:"Puce de communication USB",
+        d:"La puce qui gère les échanges de données via le câble USB. Si elle est défaillante, l'ordinateur ne reconnaît plus le téléphone, même si la charge fonctionne encore.",
+        sy:["L'ordinateur ne reconnaît plus le téléphone quand on le branche","Impossible de transférer des photos ou de faire une sauvegarde","iTunes ou Finder ne voit pas l'appareil"]},
+
+        {c:"parts",e:"Gyroscope",k:"Capteur d'orientation",
+        d:"Le capteur qui détecte comment le téléphone est orienté et comment il bouge. La rotation automatique de l'écran, la boussole et les jeux qui répondent à l'inclinaison en dépendent.",
+        sy:["L'écran ne se retourne plus automatiquement","La boussole indique une mauvaise direction","Les jeux par inclinaison ne réagissent plus correctement"]},
+
+        {c:"parts",e:"Inductor",k:"Inductance (petite bobine)",
+        d:"Un tout petit composant qui assure une alimentation stable à une partie précise du téléphone. Quand il se détache — souvent après une chute — la fonction qu'il alimente s'arrête net, même si le reste du téléphone fonctionne parfaitement.",
+        sy:["Une fonction précise s'arrête net après une chute","Le reste du téléphone fonctionne parfaitement"]},
+
+        {c:"parts",e:"Capacitor",k:"Condensateur",
+        d:"Un composant qui stocke de l'énergie pour maintenir une alimentation stable. S'il tombe en panne, il peut provoquer un court-circuit et couper totalement l'alimentation d'une fonction entière.",
+        sy:["Une fonction tombe en panne sans raison apparente","Aucun choc ni immersion ne précède la panne"]},
+
+        {c:"parts",e:"Crystal",k:"Quartz (oscillateur interne)",
+        d:"Un minuscule composant qui donne le rythme de fonctionnement à certaines puces — un peu comme une horloge. Sans lui, la puce qu'il cadence ne peut plus fonctionner du tout.",
+        sy:["Disparition soudaine de tout le réseau mobile sans autre cause visible","Le Wi-Fi cesse de fonctionner subitement"]},
+
+        {c:"parts",e:"Flex Cable",k:"Nappe flexible (câble ruban)",
+        d:"Un câble plat et souple qui relie les composants périphériques (écran, caméra, boutons) à la carte mère. Si la nappe est pliée ou mal connectée, la fonction qu'elle relie devient capricieuse.",
+        sy:["Une fonction marche si on appuie à un endroit précis du téléphone, sinon non","Le problème revient de façon intermittente","Apparu après le remplacement de l'écran ou d'un autre composant"]},
+
+        {c:"parts",e:"Taptic Engine",k:"Moteur vibrant (Taptic Engine)",
+        d:"Le moteur vibrant de précision d'Apple, capable de produire différents types de retours : la sensation de clic du bouton Home, les confirmations Apple Pay, les vibrations des notifications.",
+        sy:["Plus aucune vibration, même pour les appels","Le bouton Home ne donne plus aucune sensation de clic","Les confirmations haptiques (Apple Pay, etc.) ont disparu"]},
+
+        {c:"parts",e:"Midframe",k:"Châssis (armature interne)",
+        d:"La structure métallique interne qui maintient tous les éléments du téléphone en place : carte mère, batterie, écran. Une déformation après une chute peut exercer une pression sur l'écran ou tordre la carte mère.",
+        sy:["L'écran ne se referme plus bien","Le dos du téléphone ne colle plus correctement","Fissures qui réapparaissent malgré les réparations"]},
+
+        {c:"parts",e:"Logic Board",k:"Carte mère (Logic Board)",
+        d:"La carte principale sur laquelle sont montées toutes les puces et composants du téléphone. C'est la pièce centrale qui fait fonctionner l'ensemble du téléphone.",
+        sy:["Plusieurs fonctions en panne en même temps","Le téléphone ne répond à rien malgré une batterie chargée"]},
+
+        // ── DIAGNOSTIC ──
+        {c:"diag",e:"DFU Mode",k:"Mode DFU",
+        d:"Un mode de démarrage très bas niveau de l'iPhone, où l'écran reste noir mais le téléphone est reconnu par un ordinateur. Il permet de réinstaller complètement iOS même quand le téléphone ne démarre plus normalement.",
+        sy:["L'écran est noir mais le téléphone est reconnu par un ordinateur"]},
+
+        {c:"diag",e:"Recovery Mode",k:"Mode de récupération",
+        d:"Un mode de démarrage où l'iPhone affiche une icône de câble sur l'écran et attend d'être restauré via un ordinateur. Utilisé quand le téléphone est bloqué et ne démarre plus normalement.",
+        sy:["L'écran affiche une icône de câble et ne va pas plus loin","Le téléphone est bloqué sur cet écran sans pouvoir démarrer normalement"]},
+
+        {c:"diag",e:"Brick",k:"Téléphone mort (Brick)",
+        d:"Un téléphone complètement inopérant. La brique logicielle (système corrompu) est récupérable par une restauration. La brique matérielle (panne physique interne) nécessite une réparation.",
+        sy:["Le téléphone ne réagit à rien du tout","Même branché à un ordinateur, rien ne se passe","Ni sons, ni écran, ni vibration"]},
+
+        {c:"diag",e:"iTunes Error Codes",k:"Codes d'erreur iTunes",
+        d:"Quand une restauration via iTunes échoue, un code numérique s'affiche. Chaque code indique une cause spécifique et oriente le diagnostic.",
+        sy:["Erreur 4013 / 4014 → mémoire de stockage endommagée","Erreur 53 → remplacement non autorisé du bouton Home","Erreur 14 → batterie ou alimentation","Erreur 9 → problème de connexion USB"]},
+
+        // ── VERROUILLAGE ──
+        {c:"lock",e:"iCloud Lock",k:"Verrouillage iCloud",
+        d:"Un verrou de sécurité Apple qui s'active quand un iPhone est réinitialisé alors que la fonction 'Localiser mon iPhone' était active. Sans l'identifiant Apple du propriétaire d'origine, l'appareil est inutilisable.",
+        sy:["Après une réinitialisation, le téléphone demande un identifiant Apple inconnu","Écran 'Verrou d'activation' impossible à dépasser"]},
+
+        {c:"lock",e:"FMI (Find My iPhone)",k:"Localiser mon iPhone",
+        d:"La fonction de localisation Apple. Tant qu'elle est activée, toute réinitialisation du téléphone déclenche le verrouillage iCloud automatiquement.",
+        sy:["Après achat d'occasion : le téléphone demande un identifiant Apple que vous ne connaissez pas","Le vendeur 'n'arrive plus à désactiver' FMI — signe fréquent d'arnaque"]},
+
+        {c:"lock",e:"MDM Lock",k:"Verrouillage de gestion d'entreprise",
+        d:"Un système de gestion à distance installé par les entreprises et les écoles sur leurs téléphones. Il permet à l'organisation de contrôler l'appareil : bloquer des applications, imposer des restrictions. Si le téléphone est réinitialisé, il se ré-enregistre automatiquement.",
+        sy:["Après achat d'un téléphone pro d'occasion : message '[Société] gère cet appareil'","Des applications ne peuvent pas être installées","Des réglages sont grisés et inaccessibles"]},
+
+        {c:"lock",e:"Carrier Lock",k:"Verrouillage opérateur",
+        d:"Un téléphone verrouillé opérateur ne fonctionne qu'avec la carte SIM de l'opérateur chez qui il a été acheté. C'est courant sur les téléphones achetés avec un abonnement en boutique.",
+        sy:["Avec une SIM d'un autre opérateur : 'SIM non supportée'","Impossible d'utiliser une SIM locale à l'étranger"]},
+
+        {c:"lock",e:"SIM Unlock",k:"Déverrouillage SIM",
+        d:"Le déverrouillage SIM libère le téléphone de son verrouillage opérateur. Une fois déverrouillé, le téléphone accepte les cartes SIM de n'importe quel opérateur.",
+        sy:[]},
+
+        {c:"lock",e:"IMEI",k:"IMEI — numéro d'identité du téléphone",
+        d:"Le numéro d'identification unique de chaque téléphone, comme une plaque d'immatriculation. Il est permanent et ne change jamais. Si un téléphone est signalé volé, son IMEI est bloqué et il ne peut plus se connecter à aucun réseau. On le consulte en tapant *#06#.",
+        sy:["IMEI sur liste noire : le téléphone ne capte aucun réseau même avec une SIM valide","IMEI affiché 000000 : la puce de communication est endommagée"]},
+
+        {c:"lock",e:"Hard Brick",k:"Brique matérielle",
+        d:"La forme la plus grave de panne : le téléphone est complètement mort à cause d'une défaillance physique interne. Aucune restauration logicielle ne peut le réparer — une réparation de la carte mère est nécessaire.",
+        sy:["Aucune réaction, même en branchant sur un ordinateur","Ni mode DFU ni mode de récupération ne sont accessibles","Le téléphone est complètement silencieux et noir"]},
+
+        {c:"lock",e:"Hard Reset",k:"Redémarrage forcé",
+        d:"Une combinaison de boutons qui force le téléphone à redémarrer sans effacer aucune donnée. C'est la première chose à essayer quand l'écran est figé ou que le téléphone ne répond plus.",
+        sy:["L'écran est figé et ne répond plus à rien","Le téléphone s'est bloqué sur une application"]},
+
+        {c:"lock",e:"DFU Restore",k:"Restauration complète (DFU)",
+        d:"La réinstallation complète d'iOS depuis le mode DFU. iOS est entièrement effacé et réinstallé depuis zéro. Toutes les données personnelles sont perdues.",
+        sy:["Le téléphone ne démarre plus et aucune restauration normale ne fonctionne"]},
+
+        {c:"lock",e:"Firmware",k:"Logiciel interne des puces",
+        d:"Le logiciel intégré directement dans les puces du téléphone pour les faire fonctionner. iOS en est l'exemple principal, mais chaque puce a aussi son propre logiciel interne. S'il est corrompu, la puce cesse de fonctionner.",
+        sy:["Panne d'une fonction précise sans cause physique apparente","Apparu après une mise à jour interrompue"]},
+
+        {c:"lock",e:"Baseband Error",k:"Erreur de la puce de communication",
+        d:"La puce qui gère les appels, SMS et données mobiles est défaillante ou son logiciel interne est corrompu. Le téléphone perd tout réseau mobile et le numéro IMEI peut disparaître.",
+        sy:["Plus aucun réseau mobile après une restauration","L'IMEI est affiché 000000","La version du logiciel de communication est absente dans les réglages"]},
+      ];
+
+      const CLBL = {
+        solder: "Soudure",
+        damage: "Dommages et symptômes",
+        parts: "Composants",
+        diag: "Diagnostic",
+        lock: "Verrouillage et logiciel",
       };
-    }
-    acc+=p.segLens[i];
-  }
-  return pts[pts.length-1];
-}
+      const CORDER = ["solder", "damage", "parts", "diag", "lock"];
+      const CBG = {
+        solder: "#1e1c10",
+        damage: "#1e0e0e",
+        parts: "#0e0e1e",
+        diag: "#131018",
+        lock: "#1a0e1e",
+      };
+      const CICO = {
+        solder: "🔧",
+        damage: "⚠️",
+        parts: "🔬",
+        diag: "📊",
+        lock: "🔐",
+      };
+      let activeCat = "all",
+        searchQ = "";
+      function slug(s) {
+        return s
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+      }
+      function esc(s) {
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
 
-/* ── HOVER ── */
-let hoveredChip=null;
-function findChip(px,py){
-  for(let i=CHIPS.length-1;i>=0;i--){
-    const c=CHIPS[i];
-    const r=sr(c.x-c.w/2,c.y-c.h/2,c.w,c.h);
-    if(px>=r.x&&px<=r.x+r.w&&py>=r.y&&py<=r.y+r.h) return c;
-  }
-  return null;
-}
-cv.addEventListener("mousemove",e=>{
-  hoveredChip=findChip(e.clientX,e.clientY);
-  if(hoveredChip){tt.textContent=hoveredChip.desc;tt.classList.add("on");}
-  else tt.classList.remove("on");
-});
-cv.addEventListener("touchstart",e=>{
-  const t=e.touches[0];
-  hoveredChip=findChip(t.clientX,t.clientY);
-  if(hoveredChip){tt.textContent=hoveredChip.desc;tt.classList.add("on");}
-  else tt.classList.remove("on");
-},{passive:true});
+      function render() {
+        const q = searchQ.trim().toLowerCase();
+        const lst = document.getElementById("lst");
+        let html = "",
+          count = 0;
+        CORDER.forEach((cat) => {
+          if (activeCat !== "all" && activeCat !== cat) return;
+          const items = D.filter((d) => {
+            if (d.c !== cat) return false;
+            if (!q) return true;
+            return (
+              d.e.toLowerCase().includes(q) ||
+              d.k.toLowerCase().includes(q) ||
+              d.d.toLowerCase().includes(q) ||
+              (d.sy || []).some((s) => s.toLowerCase().includes(q))
+            );
+          });
+          if (!items.length) return;
+          count += items.length;
+          const mkCard = (d) => {
+            const id = slug(d.e);
+            const syH = d.sy && d.sy.length
+              ? `<div class="sec"><div class="slbl">Ce que vous observez</div><div class="slist">${d.sy.map((s) => `<div class="si">${esc(s)}</div>`).join("")}</div></div>`
+              : "";
+            return `<div class="card" id="${id}" onclick="tog('${id}')">
+<div class="ctop">
+  <div class="cleft">
+    <div class="cbadge" style="background:${CBG[cat]}">${CICO[cat]}</div>
+    <div class="cname"><div class="cen">${esc(d.k)}</div><div class="ckr">${esc(d.e)}</div></div>
+  </div>
+  <div class="chev">▼</div>
+</div>
+<div class="cbody">
+  <div class="cinner">
+    <div class="sec"><div class="slbl">Ce que c'est</div><div class="stxt">${d.d}</div></div>
+    ${syH}
+  </div>
+</div>
+</div>`;
+          };
+          const L = items.filter((_, i) => i % 2 === 0).map(mkCard).join("");
+          const R = items.filter((_, i) => i % 2 === 1).map(mkCard).join("");
+          html += `<div class="clbl">${CLBL[cat]}</div>`;
+          html += `<div class="col-wrap"><div class="col-l">${L}</div><div class="col-r">${R}</div></div>`;
+        });
+        lst.innerHTML = count
+          ? html
+          : `<div class="empty">Aucun résultat.</div>`;
+      }
 
-/* ── DRAW ── */
-let frame=0,lastT=0;
+      function renderSubset(slugSet) {
+        const lst = document.getElementById("lst");
+        const items = D.filter(d => slugSet.has(slug(d.e)));
+        const mkCard = (d) => {
+          const cat = d.c, id = slug(d.e);
+          const syH = d.sy && d.sy.length
+            ? `<div class="sec"><div class="slbl">Ce que vous observez</div><div class="slist">${d.sy.map(s => `<div class="si">${esc(s)}</div>`).join("")}</div></div>`
+            : "";
+          return `<div class="card" id="${id}" onclick="tog('${id}')">
+<div class="ctop">
+  <div class="cleft">
+    <div class="cbadge" style="background:${CBG[cat]}">${CICO[cat]}</div>
+    <div class="cname"><div class="cen">${esc(d.k)}</div><div class="ckr">${esc(d.e)}</div></div>
+  </div>
+  <div class="chev">▼</div>
+</div>
+<div class="cbody">
+  <div class="cinner">
+    <div class="sec"><div class="slbl">Ce que c'est</div><div class="stxt">${d.d}</div></div>
+    ${syH}
+  </div>
+</div>
+</div>`;
+        };
+        const L = items.filter((_,i) => i%2===0).map(mkCard).join("");
+        const R = items.filter((_,i) => i%2===1).map(mkCard).join("");
+        lst.innerHTML = `<div class="col-wrap"><div class="col-l">${L}</div><div class="col-r">${R}</div></div>`;
+      }
 
-function drawBoard(){
-  // board fill
-  ctx.save();
-  const bx=s(0,0).x,by=s(0,0).y,bw=BW*scale,bh=BH*scale,br=14*scale;
-  ctx.beginPath();
-  ctx.roundRect(bx,by,bw,bh,br);
-  ctx.fillStyle="#0b1f0e";
-  ctx.fill();
+      function tog(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle("open");
+      }
 
-  // substrate texture (subtle grid)
-  ctx.strokeStyle="rgba(0,80,30,0.18)";ctx.lineWidth=.5;
-  const step=14*scale;
-  for(let x=bx;x<bx+bw;x+=step){ctx.beginPath();ctx.moveTo(x,by);ctx.lineTo(x,by+bh);ctx.stroke();}
-  for(let y=by;y<by+bh;y+=step){ctx.beginPath();ctx.moveTo(bx,y);ctx.lineTo(bx+bw,y);ctx.stroke();}
+      window.addEventListener("load", () => {
+        const params = new URLSearchParams(location.search);
 
-  // board edge
-  ctx.beginPath();
-  ctx.roundRect(bx,by,bw,bh,br);
-  ctx.strokeStyle="rgba(0,180,80,0.35)";ctx.lineWidth=2;ctx.stroke();
-
-  // mounting holes
-  [[22,22],[BW-22,22],[22,BH-22],[BW-22,BH-22]].forEach(([mx,my])=>{
-    const p=s(mx,my);
-    ctx.beginPath();ctx.arc(p.x,p.y,4*scale,0,Math.PI*2);
-    ctx.fillStyle="#050e07";ctx.fill();
-    ctx.strokeStyle="rgba(180,130,20,.6)";ctx.lineWidth=1;ctx.stroke();
-  });
-
-  // board label
-  ctx.save();
-  ctx.fillStyle="rgba(200,255,200,0.18)";
-  ctx.font=`${7*scale}px monospace`;
-  ctx.textAlign="center";
-  const lp=s(BW/2,BH-14);
-  ctx.fillText("NOVA-1  CUSTOM SILICON  REV.A",lp.x,lp.y);
-  ctx.restore();
-
-  ctx.restore();
-}
-
-function drawTraces(){
-  TRACES.forEach(tr=>{
-    const pts=tr.pts;
-    ctx.save();
-    ctx.beginPath();
-    const p0=s(pts[0].x,pts[0].y);
-    ctx.moveTo(p0.x,p0.y);
-    for(let i=1;i<pts.length;i++){const p=s(pts[i].x,pts[i].y);ctx.lineTo(p.x,p.y);}
-    ctx.strokeStyle=tr.col+"88";
-    ctx.lineWidth=(tr.w||1.2)*scale;
-    ctx.lineCap="round";ctx.lineJoin="round";
-    ctx.stroke();
-    ctx.restore();
-  });
-}
-
-function drawPulses(){
-  pulses.forEach(p=>{
-    const pos=getPulsePos(p);
-    const sp=s(pos.x,pos.y);
-    const col=p.trace.col;
-    // glow
-    ctx.save();
-    const g=ctx.createRadialGradient(sp.x,sp.y,0,sp.x,sp.y,7*scale);
-    g.addColorStop(0,"rgba(255,255,255,.95)");
-    g.addColorStop(.3,col+"ee");
-    g.addColorStop(1,col+"00");
-    ctx.fillStyle=g;
-    ctx.beginPath();ctx.arc(sp.x,sp.y,7*scale,0,Math.PI*2);ctx.fill();
-    ctx.restore();
-    // dot
-    ctx.save();
-    ctx.fillStyle="#fff";
-    ctx.beginPath();ctx.arc(sp.x,sp.y,1.8*scale,0,Math.PI*2);ctx.fill();
-    ctx.restore();
-  });
-}
-
-function drawVias(){
-  VIAS.forEach(v=>{
-    const p=s(v.x,v.y);
-    ctx.beginPath();ctx.arc(p.x,p.y,2.8*scale,0,Math.PI*2);
-    ctx.fillStyle="#b08020";ctx.fill();
-    ctx.strokeStyle="#ffe080";ctx.lineWidth=.8*scale;ctx.stroke();
-    ctx.beginPath();ctx.arc(p.x,p.y,1.1*scale,0,Math.PI*2);
-    ctx.fillStyle="#050e07";ctx.fill();
-  });
-}
-
-function drawPassives(){
-  PASSIVES.forEach(p=>{
-    const sc=s(p.x,p.y);
-    const pw=5*scale,ph=3*scale;
-    if(p.type==="cap"){
-      // capacitor (two parallel lines)
-      ctx.save();
-      ctx.strokeStyle="#b08020";ctx.lineWidth=1.2*scale;
-      ctx.beginPath();ctx.moveTo(sc.x-pw*.5,sc.y-ph*.8);ctx.lineTo(sc.x-pw*.5,sc.y+ph*.8);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(sc.x+pw*.5,sc.y-ph*.8);ctx.lineTo(sc.x+pw*.5,sc.y+ph*.8);ctx.stroke();
-      ctx.strokeStyle="#b0802044";ctx.lineWidth=.8*scale;
-      ctx.beginPath();ctx.moveTo(sc.x-pw*.5,sc.y);ctx.lineTo(sc.x+pw*.5,sc.y);ctx.stroke();
-      ctx.restore();
-    } else {
-      // resistor (small rectangle)
-      ctx.save();
-      ctx.fillStyle="#222";
-      ctx.strokeStyle="#b08020";ctx.lineWidth=.8*scale;
-      ctx.fillRect(sc.x-pw*.6,sc.y-ph*.6,pw*1.2,ph*1.2);
-      ctx.strokeRect(sc.x-pw*.6,sc.y-ph*.6,pw*1.2,ph*1.2);
-      ctx.restore();
-    }
-  });
-}
-
-function drawChips(){
-  CHIPS.forEach(c=>{
-    const r=sr(c.x-c.w/2,c.y-c.h/2,c.w,c.h);
-    const hovered=hoveredChip&&hoveredChip.id===c.id;
-    const bc=TYPE_BORDER[c.t]||"#448888";
-
-    ctx.save();
-
-    // glow on hover
-    if(hovered){
-      ctx.shadowBlur=18*scale;
-      ctx.shadowColor=bc;
-    }
-
-    // body
-    ctx.fillStyle=TYPE_COL[c.t]||"#141414";
-    ctx.strokeStyle=hovered?bc:bc+"99";
-    ctx.lineWidth=(hovered?2:1.2)*scale;
-    ctx.beginPath();ctx.roundRect(r.x,r.y,r.w,r.h,2*scale);
-    ctx.fill();ctx.stroke();
-
-    ctx.shadowBlur=0;
-
-    // pin marks (small lines on edges)
-    const pinStep=7*scale,pinLen=2.5*scale;
-    // top/bottom pins
-    for(let px=r.x+pinStep;px<r.x+r.w-pinStep*.5;px+=pinStep){
-      ctx.fillStyle=bc+"99";
-      ctx.fillRect(px-1,r.y-pinLen,2,pinLen);
-      ctx.fillRect(px-1,r.y+r.h,2,pinLen);
-    }
-    // left/right pins
-    for(let py=r.y+pinStep;py<r.y+r.h-pinStep*.5;py+=pinStep){
-      ctx.fillRect(r.x-pinLen,py-1,pinLen,2);
-      ctx.fillRect(r.x+r.w,py-1,pinLen,2);
-    }
-
-    // inner texture (dot matrix for BGA-like look on big chips)
-    if(c.w>60){
-      ctx.save();
-      ctx.globalAlpha=.25;
-      ctx.fillStyle=bc;
-      const dotStep=8*scale;
-      for(let dx=r.x+dotStep;dx<r.x+r.w-dotStep*.5;dx+=dotStep)
-        for(let dy=r.y+dotStep;dy<r.y+r.h-dotStep*.5;dy+=dotStep){
-          ctx.beginPath();ctx.arc(dx,dy,1.2*scale,0,Math.PI*2);ctx.fill();
+        // ?terms=water-damage,short-circuit → show only those cards, all open
+        const termsParam = params.get("terms");
+        if (termsParam) {
+          const ids = termsParam.split(",").map(s => s.trim()).filter(Boolean);
+          // filter D to only those slugs
+          const slugSet = new Set(ids);
+          // temporary override: show only matching entries
+          renderSubset(slugSet);
+          setTimeout(() => {
+            ids.forEach(id => {
+              const el = document.getElementById(id);
+              if (el) el.classList.add("open");
+            });
+            const first = document.getElementById(ids[0]);
+            if (first) first.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 80);
+          return;
         }
-      ctx.restore();
-    }
 
-    // label
-    ctx.save();
-    ctx.fillStyle=hovered?"#fff":"rgba(200,255,200,0.75)";
-    ctx.textAlign="center";ctx.textBaseline="middle";
-    const lines=c.lbl.split("\n");
-    const fs=Math.min((c.h*.28)*scale,(c.w*.22)*scale);
-    ctx.font=`700 ${Math.max(fs,6)}px monospace`;
-    const lh=(c.h*.32)*scale;
-    lines.forEach((l,i)=>{
-      const ly=s(c.x,c.y).y+(i-(lines.length-1)/2)*lh;
-      ctx.fillText(l,s(c.x,c.y).x,ly);
-    });
-    ctx.restore();
+        // ?q=water+damage → auto-search
+        const qParam = params.get("q");
+        if (qParam) {
+          document.getElementById("q").value = qParam;
+          searchQ = qParam;
+          render();
+          return;
+        }
 
-    ctx.restore();
-  });
-}
+        // #water-damage → scroll + open card (full list stays visible)
+        if (location.hash) {
+          const id = location.hash.slice(1);
+          setTimeout(() => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add("open", "highlight");
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+            setTimeout(() => el.classList.remove("highlight"), 2500);
+          }, 80);
+        }
+      });
 
-/* ── LOOP ── */
-function loop(t){
-  requestAnimationFrame(loop);
-  const dt=Math.min((t-(lastT||t))/1000,.05);
-  lastT=t;frame++;
+      document.querySelectorAll(".tab").forEach((t) => {
+        t.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab")
+            .forEach((x) => x.classList.remove("on"));
+          t.classList.add("on");
+          activeCat = t.dataset.c;
+          render();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
 
-  ctx.clearRect(0,0,W,H);
+      let st;
+      document.getElementById("q").addEventListener("input", (e) => {
+        clearTimeout(st);
+        st = setTimeout(() => {
+          searchQ = e.target.value;
+          activeCat = "all";
+          document
+            .querySelectorAll(".tab")
+            .forEach((t) => t.classList.remove("on"));
+          document.querySelector(".tab[data-c='all']").classList.add("on");
+          render();
+        }, 200);
+      });
 
-  // ambient glow behind board
-  const bc=s(BW/2,BH/2);
-  const g=ctx.createRadialGradient(bc.x,bc.y,0,bc.x,bc.y,BW*.6*scale);
-  g.addColorStop(0,"rgba(0,60,20,.25)");g.addColorStop(1,"rgba(0,0,0,0)");
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-
-  drawBoard();
-  drawTraces();
-  drawVias();
-  drawPassives();
-  drawChips();
-
-  // update pulses
-  pulses.forEach(p=>{
-    p.progress=(p.progress+dt*(p.trace.sp||1)*.18/p.totalLen)%1;
-  });
-  drawPulses();
-}
-
-requestAnimationFrame(loop);
-</script>
-</body>
+      render();
+    </script>
+  </body>
 </html>
